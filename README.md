@@ -9,6 +9,8 @@
 
 PayFi-Cred is a revolutionary Web3 credit protocol that enables instant credit approvals based on on-chain income verification. Built on Shardeum's EVM-compatible blockchain, it features AI-powered credit scoring, soulbound Credit NFTs, and zero-interest repayments within 30 days.
 
+**Winner of Inco's $600 Privacy Challenge** and backed by ThinkRoot Ventures' $1,200 investment, PayFi-Cred includes both web and mobile applications for comprehensive DeFi credit management.
+
 ## 🌟 Key Features
 
 - ⚡ **Instant Credit Approvals** - AI evaluates on-chain income in under 3 seconds
@@ -60,13 +62,15 @@ See [ENV_CONFIG_GUIDE.md](./ENV_CONFIG_GUIDE.md) for detailed environment setup 
 ### Tech Stack
 
 - **Frontend**: Next.js 16.1.1 with App Router
+- **Mobile App**: React Native with Expo (built using ThinkRoot PSLang)
 - **Language**: TypeScript 5
 - **Styling**: TailwindCSS 4 with custom dark theme
 - **State Management**: Zustand with persistence
 - **Animations**: Framer Motion
 - **Charts**: Recharts
 - **Web3**: ethers.js v6, MetaMask integration
-- **Database**: IndexedDB for client-side storage
+- **Database**: IndexedDB for client-side storage, MongoDB for KYC data
+- **Privacy**: Inco confidential computing, vlayer zero-knowledge proofs
 
 ### Project Structure
 
@@ -149,12 +153,18 @@ PayFi-Cred leverages **Inco's confidential computing technology** - the TLS/SSL 
 
 ### Why Privacy Matters in DeFi
 
-Traditional credit systems expose users' complete financial profiles:
+Traditional credit systems expose users' complete financial profiles on **Shardeum blockchain**:
 
-- **Transaction history analysis** reveals spending habits and lifestyle
+- **Transaction history analysis** reveals spending habits and lifestyle patterns
 - **Credit limit & risk score** indicates financial health and borrowing capacity
 - **Agent policies & category limits** show behavioral patterns and preferences
 - **Identity verification data** (PAN, Aadhaar) creates permanent identity linkages
+
+**Why it must be private:** This data reveals:
+
+- **Income & spending habits**: Complete financial behavior tracking
+- **Financial reputation**: Creditworthiness and payment reliability
+- **Personal behavior profile**: Lifestyle, preferences, and consumption patterns
 
 **Without privacy, this data becomes a permanent public record** that can be used for:
 
@@ -187,9 +197,16 @@ Inco provides **confidential smart contracts** that can:
 
 **Challenge Context**: Build next-gen, privacy-first dApps where sensitive data stays private while being processed on-chain. $600 USD prize for innovative confidential DeFi applications.
 
-### incoJS Integration in PayFi-Cred
+### Inco Integration in PayFi-Cred
 
-PayFi-Cred uses Inco's JavaScript SDK (`@inco/js`) for confidential credit scoring and income verification.
+PayFi-Cred uses Inco's JavaScript SDK (`@inco/js`) for confidential credit scoring and income verification, enabling:
+
+- **Encrypted Credit Scoring**: Credit scores processed on-chain without revealing actual values
+- **Private Income Verification**: Income data verified confidentially using zero-knowledge proofs
+- **Secure Agent Policies**: Spending limits and category restrictions enforced privately
+- **Confidential Risk Assessment**: Risk scores calculated without exposing financial history
+
+**Shardeum Integration**: Built on Shardeum's high-performance EVM-compatible blockchain for confidential DeFi operations.
 
 #### incoJS Integration Test Results
 
@@ -383,14 +400,14 @@ PayFi-Cred uses MongoDB for secure storage of KYC and identity verification data
 ```javascript
 // MongoDB connection configuration
 const mongoConfig = {
-  uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/payficred',
-  database: 'PayFiCredDB',
+  uri: process.env.MONGODB_URI || "mongodb://localhost:27017/payficred",
+  database: "PayFiCredDB",
   options: {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    ssl: process.env.NODE_ENV === 'production',
-    authSource: 'admin'
-  }
+    ssl: process.env.NODE_ENV === "production",
+    authSource: "admin",
+  },
 };
 ```
 
@@ -480,7 +497,7 @@ import { MongoClient } from 'mongodb';
 
 class DatabaseManager {
   private client: MongoClient;
-  
+
   async connect() {
     try {
       this.client = new MongoClient(mongoConfig.uri, mongoConfig.options);
@@ -491,7 +508,7 @@ class DatabaseManager {
       // Retry logic here
     }
   }
-  
+
   async getKYCData(walletAddress: string) {
     const db = this.client.db(mongoConfig.database);
     return await db.collection('kyc_verifications')
@@ -641,12 +658,52 @@ npm run test:e2e
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 🏆 Sponsors & Partners
+
+### Inco - $600 Prize Winner
+
+**"Privacy is the next frontier of Web3, and Inco is bringing it on-chain."**
+
+Inco is a confidentiality layer for blockchain, enabling smart contracts to work with encrypted data on public chains - basically TLS/SSL for Web3. PayFi-Cred was built using Inco's latest SDK and smart contract libraries to create confidential dApps where sensitive financial data stays private while still being processed on-chain.
+
+**How we used Inco:**
+
+- **Confidential Credit Scoring**: Encrypted credit scores processed on-chain without revealing actual values
+- **Private Income Verification**: Income data verified using zero-knowledge proofs
+- **Secure Agent Policies**: Spending limits enforced privately on Shardeum blockchain
+- **Encrypted Transaction Analysis**: Financial behavior analyzed without exposing personal data
+
+**Challenge**: Build next-gen, privacy-first decentralized applications and push the limits of Web3. $600 USD prize awarded for innovative confidential DeFi applications.
+
+### ThinkRoot Ventures - $1,200 Investment
+
+**"Crafting the Extraordinary - At the intersection of artificial intelligence and human experience"**
+
+ThinkRoot Ventures provided strategic investment and technical guidance for PayFi-Cred's development.
+
+**PSLang Platform Integration:**
+PayFi-Cred leverages ThinkRoot's revolutionary PSLang platform that breaks language barriers in technology:
+
+- **Natural Language Coding**: Write code in native languages (English, Hindi, etc.)
+- **Cross-Language Collaboration**: Team members can code in their preferred language
+- **AI-Powered Translation**: Ideas converted to flawless code automatically
+- **Inclusive Development**: Enables global collaboration regardless of technical background
+
+**Mobile App Development:**
+Built a companion mobile app using PSLang for enhanced user experience:
+
+- **Real-time Credit Monitoring**: Live credit score and limit tracking
+- **Agent Performance Dashboard**: Mobile-optimized agent analytics
+- **Secure Transaction Signing**: Mobile wallet integration with biometric authentication
+- **Push Notifications**: Instant alerts for credit approvals and payment reminders
+
 ## 🙏 Acknowledgments
 
-- **Shardeum**: For providing the high-performance EVM-compatible blockchain
-- **vlayer**: For zero-knowledge proof infrastructure
-- **Inco**: For privacy-preserving encryption
-- **OpenZeppelin**: For secure smart contract patterns
+- **Shardeum**: For providing the high-performance EVM-compatible blockchain infrastructure
+- **vlayer**: For zero-knowledge proof infrastructure enabling private income verification
+- **Inco**: For privacy-preserving encryption technology ($600 prize winner)
+- **ThinkRoot Ventures**: For strategic investment and PSLang platform integration ($1,200 investment)
+- **OpenZeppelin**: For secure smart contract patterns and best practices
 
 ## 📞 Support
 
