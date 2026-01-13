@@ -1,25 +1,6 @@
 // Smart Contract Integration with ethers.js
 import { ethers } from 'ethers';
-import { 
-  shouldUseMockData, 
-  getMockCreditInfo,
-  getMockAvailableCredit,
-  getMockIncomeScore,
-  getMockCreditLimit,
-  getMockUsedCredit,
-  mockUseCredit,
-  mockRepayCredit,
-  mockApplyIncomeScore,
-  mockGetAgentRisk,
-  mockApplyAgentPerformance,
-  showDevModeIndicator 
-} from './dev-mode';
 import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from './web3-config';
-
-// Show dev mode indicator on load
-if (typeof window !== 'undefined') {
-  showDevModeIndicator();
-}
 
 // Contract Address
 export const CONTRACT_ADDRESS = CONTRACT_ADDRESSES.FlexCreditCore;
@@ -52,114 +33,83 @@ export const getContractWithSigner = async () => {
 
 // Get credit info for a user
 export const getCreditInfo = async (userAddress: string) => {
-  // Check if we should use mock data
-  const useMock = await shouldUseMockData();
-  if (useMock) {
-    console.log('📊 Using mock credit data');
-    return getMockCreditInfo(userAddress);
-  }
-  
   try {
+    console.log('📊 Fetching credit info from contract for:', userAddress);
     const contract = getContract();
     const info = await contract.getCreditInfo(userAddress);
     
-    return {
+    const result = {
       income: info.income.toString(),
       limit: info.limit.toString(),
       used: info.used.toString(),
       available: info.available.toString(),
     };
-  } catch (error: any) {
-    console.error('Error getting credit info:', error);
     
-    // Fallback to mock data on error
-    console.log('⚠️ Contract call failed, using mock data');
-    return getMockCreditInfo(userAddress);
+    console.log('✅ Credit info fetched:', result);
+    return result;
+  } catch (error: any) {
+    console.error('❌ Error getting credit info from contract:', error);
+    throw new Error(`Failed to fetch credit info: ${error.message || 'Unknown error'}`);
   }
 };
 
 // Get available credit for a user
 export const getAvailableCredit = async (userAddress: string) => {
-  const useMock = await shouldUseMockData();
-  if (useMock) {
-    return getMockAvailableCredit(userAddress);
-  }
-  
   try {
     const contract = getContract();
     const available = await contract.getAvailableCredit(userAddress);
     return available.toString();
   } catch (error) {
-    console.error('Error getting available credit:', error);
-    return getMockAvailableCredit(userAddress);
+    console.error('❌ Error getting available credit:', error);
+    throw new Error('Failed to fetch available credit');
   }
 };
 
 // Get income score for a user
 export const getIncomeScore = async (userAddress: string) => {
-  const useMock = await shouldUseMockData();
-  if (useMock) {
-    return getMockIncomeScore(userAddress);
-  }
-  
   try {
     const contract = getContract();
     const score = await contract.incomeScore(userAddress);
     return score.toString();
   } catch (error) {
-    console.error('Error getting income score:', error);
-    return getMockIncomeScore(userAddress);
+    console.error('❌ Error getting income score:', error);
+    throw new Error('Failed to fetch income score');
   }
 };
 
 // Get credit limit for a user
 export const getCreditLimit = async (userAddress: string) => {
-  const useMock = await shouldUseMockData();
-  if (useMock) {
-    return getMockCreditLimit(userAddress);
-  }
-  
   try {
     const contract = getContract();
     const limit = await contract.creditLimit(userAddress);
     return limit.toString();
   } catch (error) {
-    console.error('Error getting credit limit:', error);
-    return getMockCreditLimit(userAddress);
+    console.error('❌ Error getting credit limit:', error);
+    throw new Error('Failed to fetch credit limit');
   }
 };
 
 // Get used credit for a user
 export const getUsedCredit = async (userAddress: string) => {
-  const useMock = await shouldUseMockData();
-  if (useMock) {
-    return getMockUsedCredit(userAddress);
-  }
-  
   try {
     const contract = getContract();
     const used = await contract.usedCredit(userAddress);
     return used.toString();
   } catch (error) {
-    console.error('Error getting used credit:', error);
-    return getMockUsedCredit(userAddress);
+    console.error('❌ Error getting used credit:', error);
+    throw new Error('Failed to fetch used credit');
   }
 };
 
 // Get agent risk score
 export const getAgentRisk = async (userAddress: string, agentId: string) => {
-  const useMock = await shouldUseMockData();
-  if (useMock) {
-    return mockGetAgentRisk(userAddress, agentId);
-  }
-  
   try {
     const contract = getContract();
     const risk = await contract.getAgentRisk(userAddress, agentId);
     return risk.toString();
   } catch (error) {
-    console.error('Error getting agent risk:', error);
-    return mockGetAgentRisk(userAddress, agentId);
+    console.error('❌ Error getting agent risk:', error);
+    throw new Error('Failed to fetch agent risk');
   }
 };
 
@@ -178,41 +128,31 @@ export const useCredit = async (amount: string) => {
 
 // Repay credit (transaction)
 export const repayCredit = async (amount: string) => {
-  const useMock = await shouldUseMockData();
-  if (useMock) {
-    console.log('💰 Using mock repayCredit');
-    return mockRepayCredit(amount);
-  }
-  
   try {
+    console.log('💰 Repaying credit:', amount);
     const contract = await getContractWithSigner();
     const tx = await contract.repayCredit(amount);
     await tx.wait();
+    console.log('✅ Credit repaid, tx hash:', tx.hash);
     return tx.hash;
   } catch (error) {
-    console.error('Error repaying credit:', error);
-    console.log('⚠️ Falling back to mock repayCredit');
-    return mockRepayCredit(amount);
+    console.error('❌ Error repaying credit:', error);
+    throw error;
   }
 };
 
 // Apply income score (transaction - requires authorization)
 export const applyIncomeScore = async (userAddress: string, incomeBucket: number) => {
-  const useMock = await shouldUseMockData();
-  if (useMock) {
-    console.log('📊 Using mock applyIncomeScore');
-    return mockApplyIncomeScore(userAddress, incomeBucket);
-  }
-  
   try {
+    console.log('📊 Applying income score for:', userAddress, 'bucket:', incomeBucket);
     const contract = await getContractWithSigner();
     const tx = await contract.applyIncomeScore(userAddress, incomeBucket);
     await tx.wait();
+    console.log('✅ Income score applied, tx hash:', tx.hash);
     return tx.hash;
   } catch (error) {
-    console.error('Error applying income score:', error);
-    console.log('⚠️ Falling back to mock applyIncomeScore');
-    return mockApplyIncomeScore(userAddress, incomeBucket);
+    console.error('❌ Error applying income score:', error);
+    throw error;
   }
 };
 
@@ -295,18 +235,8 @@ export const listenToIncomeScoreApplied = (
 
 // Fetch repayment history from event logs
 export const fetchRepaymentHistory = async (userAddress: string) => {
-  // Check if we should use mock data
-  const useMock = await shouldUseMockData();
-  if (useMock) {
-    console.log('📊 Using mock repayment history');
-    // Return mock data
-    return {
-      count: 5,
-      totalVolume: ethers.parseEther('2.5').toString()
-    };
-  }
-  
   try {
+    console.log('📊 Fetching repayment history for:', userAddress);
     const contract = getContract();
     
     // Create a filter for CreditRepaid events for this user
@@ -327,17 +257,13 @@ export const fetchRepaymentHistory = async (userAddress: string) => {
       }
     }
     
+    console.log('✅ Repayment history:', { count, totalVolume: totalVolume.toString() });
     return {
       count,
       totalVolume: totalVolume.toString()
     };
   } catch (error) {
-    console.error('Error fetching repayment history:', error);
-    console.log('⚠️ Falling back to mock repayment history');
-    // Fallback to mock data
-    return {
-      count: 5,
-      totalVolume: ethers.parseEther('2.5').toString()
-    };
+    console.error('❌ Error fetching repayment history:', error);
+    throw new Error('Failed to fetch repayment history');
   }
 };
