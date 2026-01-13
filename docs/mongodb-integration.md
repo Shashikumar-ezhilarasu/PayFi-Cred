@@ -1,5 +1,8 @@
 # MongoDB Integration: Secure KYC Data Management
 
+![WhatsApp Image 2026-01-13 at 11 34 16 AM](https://github.com/user-attachments/assets/4d2330b5-f31b-4bf2-8e42-7a2b782788de)
+
+
 ## 🎯 Overview
 
 PayFi-Cred uses MongoDB for secure storage and management of KYC (Know Your Customer) data, implementing a privacy-first approach where sensitive identity information is cryptographically linked to wallet addresses without exposing personal data.
