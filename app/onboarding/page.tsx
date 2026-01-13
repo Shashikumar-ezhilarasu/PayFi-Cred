@@ -91,7 +91,7 @@ export default function OnboardingPage() {
       setAnalyzingTxs(true);
       setError('');
       
-      console.log('🔍 Analyzing wallet transaction history on Sepolia...');
+      console.log('🔍 Analyzing wallet transaction history on Shardeum...');
       
       const provider = new ethers.BrowserProvider(window.ethereum as any);
       const currentBlock = await provider.getBlockNumber();
@@ -221,9 +221,9 @@ export default function OnboardingPage() {
       // Format for display (assuming 6 decimals for USDC)
       const formattedInfo = {
         income: info.income, // Income bucket (0, 500, 1000, 2000)
-        limit: ethers.formatUnits(info.limit, 6),
-        used: ethers.formatUnits(info.used, 6),
-        available: ethers.formatUnits(info.available, 6)
+        limit: ethers.formatUnits(info.limit, 18), // SHM uses 18 decimals
+        used: ethers.formatUnits(info.used, 18),
+        available: ethers.formatUnits(info.available, 18)
       };
       
       setCreditInfo(formattedInfo);

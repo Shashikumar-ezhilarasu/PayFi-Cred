@@ -30,7 +30,7 @@ interface CreditDetails {
 
 export default function CreditIdentityPage() {
   const router = useRouter();
-  const { wallet } = useAppStore();
+  const { wallet, setVerificationStatus } = useAppStore();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string>('');
@@ -60,14 +60,14 @@ export default function CreditIdentityPage() {
         getIncomeScore(wallet.address)
       ]);
 
-      // Scale down values for Sepolia testnet display (divide by 1000)
+      // Scale down values for Shardeum testnet display (divide by 1000)
       // This converts mainnet-scale values to testnet-appropriate amounts
       const TESTNET_SCALE = 1000;
       
-      const limitEth = ethers.formatUnits(creditInfo.limit, 6);
-      const usedEth = ethers.formatUnits(creditInfo.used, 6);
-      const availableEth = ethers.formatUnits(creditInfo.available, 6);
-      const incomeEth = ethers.formatUnits(creditInfo.income, 6);
+      const limitEth = ethers.formatUnits(creditInfo.limit, 18); // SHM uses 18 decimals
+      const usedEth = ethers.formatUnits(creditInfo.used, 18);
+      const availableEth = ethers.formatUnits(creditInfo.available, 18);
+      const incomeEth = ethers.formatUnits(creditInfo.income, 18);
 
       const limit = parseFloat(limitEth) / TESTNET_SCALE;
       const used = parseFloat(usedEth) / TESTNET_SCALE;
@@ -103,6 +103,11 @@ export default function CreditIdentityPage() {
         maxTierLimit,
         estimatedNextLimit
       });
+
+      // Mark user as verified once credit data is loaded
+      if (limit > 0) {
+        setVerificationStatus(true);
+      }
 
     } catch (err: any) {
       console.error('Error loading credit data:', err);
@@ -254,7 +259,7 @@ export default function CreditIdentityPage() {
               <DollarSign className="w-5 h-5 text-[var(--color-accent)]" />
               <span className="text-[var(--color-text-dim)] text-sm">Agent Credit Limit</span>
             </div>
-            <p className="text-3xl font-bold text-white">{limit.toFixed(6)} USDC</p>
+            <p className="text-3xl font-bold text-white">{limit.toFixed(2)} SHM</p>
             <p className="text-xs text-[var(--color-accent2)] mt-1">{creditDetails.tier} Tier</p>
           </div>
 
@@ -263,7 +268,7 @@ export default function CreditIdentityPage() {
               <TrendingUp className="w-5 h-5 text-[var(--color-accent)]" />
               <span className="text-[var(--color-text-dim)] text-sm">Available</span>
             </div>
-            <p className="text-3xl font-bold text-white">{available.toFixed(6)} USDC</p>
+            <p className="text-3xl font-bold text-white">{available.toFixed(2)} SHM</p>
             <p className="text-xs text-[var(--color-accent)] mt-1">Ready for agent</p>
           </div>
 
@@ -272,7 +277,7 @@ export default function CreditIdentityPage() {
               <BarChart3 className="w-5 h-5 text-[var(--color-accent)]" />
               <span className="text-[var(--color-text-dim)] text-sm">Used by Agent</span>
             </div>
-            <p className="text-3xl font-bold text-white">{used.toFixed(6)} USDC</p>
+            <p className="text-3xl font-bold text-white">{used.toFixed(2)} SHM</p>
             <p className="text-xs text-[var(--color-text-dim)] mt-1">
               {creditDetails.utilizationRate.toFixed(1)}% utilization
             </p>
@@ -310,8 +315,8 @@ export default function CreditIdentityPage() {
               
               <div className="bg-[var(--bg)] rounded-lg p-4 space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-[var(--color-text-dim)]">Verified Income (USDC):</span>
-                  <span className="font-semibold text-white">{income.toFixed(6)} USDC</span>
+                  <span className="text-[var(--color-text-dim)]">Verified Income (SHM):</span>
+                  <span className="font-semibold text-white">{income.toFixed(2)} SHM</span>
                 </div>
                 
                 <div className="flex justify-between items-center">
@@ -321,7 +326,7 @@ export default function CreditIdentityPage() {
                 
                 <div className="border-t border-[var(--color-accent)]/20 pt-3 flex justify-between items-center">
                   <span className="text-[var(--color-text-dim)]">Agent Credit Allocation:</span>
-                  <span className="font-semibold text-[var(--color-accent)]">{limit.toFixed(6)} USDC</span>
+                  <span className="font-semibold text-[var(--color-accent)]">{limit.toFixed(2)} SHM</span>
                 </div>
                 
                 <div className="flex justify-between items-center">
@@ -331,7 +336,7 @@ export default function CreditIdentityPage() {
                 
                 <div className="flex justify-between items-center">
                   <span className="text-[var(--color-text-dim)]">Tier Max Limit:</span>
-                  <span className="font-semibold text-white">{creditDetails.maxTierLimit.toFixed(6)} USDC</span>
+                  <span className="font-semibold text-white">{creditDetails.maxTierLimit.toFixed(2)} SHM</span>
                 </div>
               </div>
             </div>
@@ -352,7 +357,7 @@ export default function CreditIdentityPage() {
                 <div className="border-t border-[var(--color-accent)]/20 pt-3">
                   <p className="text-[var(--color-text-dim)] text-sm mb-2">After agent's next on-time payment:</p>
                   <p className="text-2xl font-bold text-[var(--color-accent)]">
-                    {Math.min(creditDetails.estimatedNextLimit, creditDetails.maxTierLimit).toFixed(6)} USDC
+                    {Math.min(creditDetails.estimatedNextLimit, creditDetails.maxTierLimit).toFixed(2)} SHM
                   </p>
                   <p className="text-xs text-[var(--color-text-dim)] mt-1">
                     (2x multiplier, capped at tier limit)
@@ -452,9 +457,9 @@ export default function CreditIdentityPage() {
             }`}>
               <h3 className="font-bold text-orange-400 mb-2">🥉 Bronze</h3>
               <p className="text-sm text-[var(--color-text-dim)] mb-2">Score: 300-579</p>
-              <p className="text-2xl font-bold text-white">0.01 USDC</p>
+              <p className="text-2xl font-bold text-white">500 SHM</p>
               <p className="text-xs text-[var(--color-text-dim)]">Max agent credit</p>
-              <p className="text-xs text-[var(--color-accent2)] mt-2">Starter agents</p>
+              <p className="text-xs text-[var(--color-accent2)] mt-2">New accounts start here</p>
             </div>
 
             <div className={`rounded-lg p-5 border-2 ${
@@ -464,9 +469,9 @@ export default function CreditIdentityPage() {
             }`}>
               <h3 className="font-bold text-gray-300 mb-2">🥈 Silver</h3>
               <p className="text-sm text-[var(--color-text-dim)] mb-2">Score: 580-669</p>
-              <p className="text-2xl font-bold text-white">0.1 USDC</p>
+              <p className="text-2xl font-bold text-white">1,000 SHM</p>
               <p className="text-xs text-[var(--color-text-dim)]">Max agent credit</p>
-              <p className="text-xs text-[var(--color-accent2)] mt-2">Growing agents</p>
+              <p className="text-xs text-[var(--color-accent2)] mt-2">After first repayment</p>
             </div>
 
             <div className={`rounded-lg p-5 border-2 ${
@@ -476,9 +481,9 @@ export default function CreditIdentityPage() {
             }`}>
               <h3 className="font-bold text-yellow-400 mb-2">🥇 Gold</h3>
               <p className="text-sm text-[var(--color-text-dim)] mb-2">Score: 670-739</p>
-              <p className="text-2xl font-bold text-white">0.5 USDC</p>
+              <p className="text-2xl font-bold text-white">2,000 SHM</p>
               <p className="text-xs text-[var(--color-text-dim)]">Max agent credit</p>
-              <p className="text-xs text-[var(--color-accent2)] mt-2">Trusted agents</p>
+              <p className="text-xs text-[var(--color-accent2)] mt-2">Consistent repayers</p>
             </div>
 
             <div className={`rounded-lg p-5 border-2 ${
@@ -488,9 +493,9 @@ export default function CreditIdentityPage() {
             }`}>
               <h3 className="font-bold text-purple-400 mb-2">💎 Platinum</h3>
               <p className="text-sm text-[var(--color-text-dim)] mb-2">Score: 740+</p>
-              <p className="text-2xl font-bold text-white">1.0 USDC</p>
+              <p className="text-2xl font-bold text-white">5,000 SHM</p>
               <p className="text-xs text-[var(--color-text-dim)]">Max agent credit</p>
-              <p className="text-xs text-[var(--color-accent2)] mt-2">Elite agents</p>
+              <p className="text-xs text-[var(--color-accent2)] mt-2">Elite performers</p>
             </div>
           </div>
         </motion.div>
@@ -505,7 +510,7 @@ export default function CreditIdentityPage() {
           <h3 className="font-bold text-lg mb-3 text-[var(--color-accent)]">On-Chain Verification</h3>
           <div className="space-y-4 text-sm">
             <p className="text-gray-300">
-              All agent credit allocations are stored and verified on the Sepolia testnet using the FlexCreditCore smart contract. Values are in USDC (6 decimals) suitable for testnet transactions.
+              All agent credit allocations are stored and verified on the Shardeum testnet using the FlexCreditCore smart contract. Values are in SHM (18 decimals) suitable for testnet transactions.
             </p>
             
             {/* Wallet Address Display */}
@@ -527,15 +532,15 @@ export default function CreditIdentityPage() {
 
             <div className="flex flex-wrap gap-4 mt-4">
               <a
-                href={`https://sepolia.etherscan.io/address/${wallet.address}`}
+                href={`https://explorer-mezame.shardeum.org/account/${wallet.address}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[var(--color-accent2)] hover:underline"
               >
-                View Your Wallet on Etherscan ↗
+                View Your Wallet on Shardeum Explorer ↗
               </a>
               <a
-                href="https://sepolia.etherscan.io/address/0xbC3fC58882Aa2c49038f35cB7bbDe7cc118bf464"
+                href="https://explorer-mezame.shardeum.org/account/0xF21C05d1AEE9b444C90855A9121a28bE941785B5"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[var(--color-accent2)] hover:underline"

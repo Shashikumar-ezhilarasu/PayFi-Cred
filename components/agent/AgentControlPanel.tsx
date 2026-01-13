@@ -63,7 +63,7 @@ export function AgentControlPanel({ agentWalletAddress, userAddress }: AgentCont
   const loadUserDebt = async () => {
     try {
       const creditInfo = await getCreditInfo(userAddress);
-      const debt = Number(creditInfo.used) / 1e6; // Convert from 6 decimals
+      const debt = Number(creditInfo.used) / 1e18; // Convert from 18 decimals (SHM)
       setUserDebt(debt);
     } catch (err) {
       console.error('Error loading user debt:', err);

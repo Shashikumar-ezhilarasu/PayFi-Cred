@@ -48,9 +48,9 @@ export default function BorrowPage() {
       // Convert from wei (6 decimals for USDC)
       const formattedInfo = {
         income: info.income,
-        limit: Number(info.limit) / 1e6,
-        used: Number(info.used) / 1e6,
-        available: Number(info.available) / 1e6,
+        limit: Number(info.limit) / 1e18, // SHM uses 18 decimals
+        used: Number(info.used) / 1e18,
+        available: Number(info.available) / 1e18,
       };
       
       setCreditInfo(formattedInfo);

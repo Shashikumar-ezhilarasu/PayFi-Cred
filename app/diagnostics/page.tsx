@@ -177,7 +177,7 @@ export default function ContractDiagnosticPage() {
           name: '6. Your Credit Info',
           status: 'success',
           message: 'Successfully read credit info',
-          details: `Income Score: ${creditInfo.income}\nCredit Limit: ${ethers.formatUnits(creditInfo.limit, 6)} USDC\nUsed: ${ethers.formatUnits(creditInfo.used, 6)} USDC\nAvailable: ${ethers.formatUnits(creditInfo.available, 6)} USDC`
+          details: `Income Score: ${creditInfo.income}\nCredit Limit: ${ethers.formatUnits(creditInfo.limit, 18)} SHM\nUsed: ${ethers.formatUnits(creditInfo.used, 18)} SHM\nAvailable: ${ethers.formatUnits(creditInfo.available, 18)} SHM`
         });
       } catch (error: any) {
         diagnostics.push({

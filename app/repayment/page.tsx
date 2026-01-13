@@ -23,7 +23,7 @@ export default function RepaymentPage() {
       if (!wallet.address) return;
       try {
         const info = await getCreditInfo(wallet.address);
-        const debt = Number(info.used) / 1e6; // Convert from 6 decimals (USDC)
+        const debt = Number(info.used) / 1e18; // Convert from 18 decimals (SHM)
         setCurrentDebt(debt);
         setRepayAmount(debt.toString()); // Default to full repayment
       } catch (err) {
@@ -106,7 +106,7 @@ export default function RepaymentPage() {
       
       // Reload debt
       const info = await getCreditInfo(wallet.address);
-      const newDebt = Number(info.used) / 1e6;
+      const newDebt = Number(info.used) / 1e18; // SHM uses 18 decimals
       setCurrentDebt(newDebt);
       
     } catch (err: any) {

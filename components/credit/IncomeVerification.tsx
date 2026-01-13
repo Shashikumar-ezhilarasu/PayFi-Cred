@@ -60,7 +60,7 @@ export default function IncomeVerification() {
       const data = await getCreditInfo(wallet.address);
       
       // Convert from wei (6 decimals for USDC)
-      const limitUSDC = Number(data.limit) / 1e6;
+      const limitSHM = Number(data.limit) / 1e18; // SHM uses 18 decimals
       const incomeScore = Number(data.income);
       
       setMonthlyIncome(incomeScore.toString());
