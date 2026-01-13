@@ -21,6 +21,7 @@ interface AppState {
   setWallet: (wallet: Partial<WalletState>) => void;
   disconnectWallet: () => void;
   refreshWalletBalance: () => Promise<void>;
+  setVerificationStatus: (verified: boolean) => void;
 
   // Credit Identity
   creditIdentity: CreditIdentity | null;
@@ -89,6 +90,22 @@ export const useAppStore = create<AppState>()(
           wallet: { ...state.wallet, ...wallet },
         })),
 
+      setVerificationStatus: (verified) =>
+        set((state) => ({
+          wallet: {
+            ...state.wallet,
+            isVerified: verified,
+            verificationDate: verified ? new Date().toISOString() : undefined,
+          },
+          creditIdentity: state.creditIdentity
+            ? {
+                ...state.creditIdentity,
+                isVerified: verified,
+                verificationDate: verified ? new Date().toISOString() : undefined,
+              }
+            : null,
+        })),
+
       disconnectWallet: () =>
         set({
           wallet: {
@@ -141,12 +158,12 @@ export const useAppStore = create<AppState>()(
           console.log('🔄 Refreshing credit data from blockchain...');
           const info = await getCreditInfo(state.wallet.address);
           
-          // Convert to CreditData format
+          // Convert to CreditData format (SHM uses 18 decimals)
           const creditData: CreditData = {
             creditScore: Number(info.income), // Using income tier as score
-            creditLimit: Number(info.limit) / 1e6, // Convert from 6 decimals
-            availableBalance: Number(info.available) / 1e6,
-            usedCredit: Number(info.used) / 1e6,
+            creditLimit: Number(info.limit) / 1e18, // Convert from 18 decimals (SHM)
+            availableBalance: Number(info.available) / 1e18, // Convert from 18 decimals (SHM)
+            usedCredit: Number(info.used) / 1e18, // Convert from 18 decimals (SHM)
             repaymentRate: 100,
             riskLevel: 'LOW',
             creditTier: 'Bronze', // TODO: Calculate from score
@@ -284,29 +301,39 @@ export const useAppStore = create<AppState>()(
           agentPolicy: validatePolicy({ ...state.agentPolicy, ...policy }),
         })),
       
-      // Credit Assessment from Sepolia transactions
+      // Credit Assessment from Shardeum transactions
       assessCredit: async (address: string) => {
         try {
           set({ isLoadingCredit: true });
-          console.log('🔍 Assessing credit from Sepolia transaction history...');
+          console.log('🔍 Assessing credit from Shardeum transaction history...');
           
           const assessment = await assessCreditLimit(address);
           
+          // Calculate credit score based on metrics or default for new users
+          const calculatedScore = assessment.metrics.repaymentScore > 0 
+            ? Math.floor(assessment.metrics.repaymentScore * 850 + 300) // Scale to 300-850
+            : 500; // Default Bronze tier score for new users
+          
           // Update credit data with assessment
           const creditData: CreditData = {
-            creditScore: Math.floor(assessment.metrics.repaymentScore * 850 + 300), // Scale to 300-850
+            creditScore: calculatedScore,
             creditLimit: assessment.creditLimit,
             availableBalance: assessment.creditLimit, // Initially all available
             usedCredit: 0,
             repaymentRate: assessment.metrics.repaymentScore * 100,
-            riskLevel: assessment.creditLimit > 0.5 ? 'LOW' : assessment.creditLimit > 0.1 ? 'MEDIUM' : 'HIGH',
-            creditTier: assessment.creditLimit > 1 ? 'Platinum' : assessment.creditLimit > 0.5 ? 'Gold' : assessment.creditLimit > 0.1 ? 'Silver' : 'Bronze',
+            riskLevel: assessment.creditLimit > 2000 ? 'LOW' : assessment.creditLimit > 1000 ? 'MEDIUM' : 'HIGH',
+            creditTier: assessment.creditLimit >= 5000 ? 'Platinum' : assessment.creditLimit >= 2000 ? 'Gold' : assessment.creditLimit >= 1000 ? 'Silver' : 'Bronze',
             assessmentTimestamp: assessment.analysisTimestamp,
             transactionCount: assessment.transactionCount,
             cashflowMetrics: assessment.metrics,
           };
           
           set({ creditData, isLoadingCredit: false });
+          
+          // Mark as verified if credit was successfully assessed
+          if (assessment.creditLimit > 0) {
+            get().setVerificationStatus(true);
+          }
           
           console.log('✅ Credit assessment complete:');
           assessment.reasoning.forEach(line => console.log(`   ${line}`));
@@ -332,7 +359,7 @@ export const useAppStore = create<AppState>()(
         });
         
         console.log(`💳 Credit adjusted: ${result.reason}`);
-        console.log(`   ${state.creditData.creditLimit.toFixed(6)} ETH → ${result.newLimit.toFixed(6)} ETH`);
+        console.log(`   ${state.creditData.creditLimit.toFixed(6)} SHM → ${result.newLimit.toFixed(6)} SHM`);
       },
 
       // UI state
