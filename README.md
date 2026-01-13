@@ -7,6 +7,21 @@
 
 > **AI-Powered Credit Decisions in Seconds** - The future of decentralized credit on Shardeum
 
+## 🔗 Smart Contracts
+
+PayFi-Cred operates on the Shardeum EVM Testnet (Chain ID: 8119) with multiple interconnected smart contracts:
+
+### Core Contracts
+
+| Contract                     | Address                                      | Purpose                                |
+| ---------------------------- | -------------------------------------------- | -------------------------------------- |
+| **FlexCreditCore**           | `0xa8D44Ef33A40a18E8bDb22279b26309a4159AE5C` | Main credit management                 |
+| **IncomeProofVerifier**      | `0x53240F03241A7bB259A60DA48c543c5679bEF0D5` | Income verification via vlayer proofs  |
+| **AgentWalletFactory**       | `0xEb0B186f24d4fd6be637701551382b9F8f7f6738` | Factory for AI agent smart wallets     |
+| **AgentPolicy**              | `0xa864A6f1A4a8320fE8ede2E4f95CAD8a0Fb623A1` | Agent spending policy enforcement      |
+| **AgentPerformanceVerifier** | `0x29B97d27393256c0b776E1403FA594dbb48E1c08` | Agent trading performance verification |
+
+
 PayFi-Cred is a revolutionary Web3 credit protocol that enables instant credit approvals based on on-chain income verification. Built on Shardeum's EVM-compatible blockchain, it features AI-powered credit scoring, soulbound Credit NFTs, and zero-interest repayments within 30 days.
 
 **Winner of Inco's $600 Privacy Challenge** and backed by ThinkRoot Ventures' $1,200 investment, PayFi-Cred includes both web and mobile applications for comprehensive DeFi credit management.
