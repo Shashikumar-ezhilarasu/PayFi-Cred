@@ -209,6 +209,15 @@ export default function TransactionsPage() {
           >
             {loading ? 'Refreshing...' : 'Refresh'}
           </button>
+          <a
+            href={`https://explorer-mezame.shardeum.org/address/${wallet.address}?tab=txs`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-400 rounded-lg transition-all border border-cyan-500/30 flex items-center gap-2"
+          >
+            <ExternalLink size={16} />
+            Block Explorer
+          </a>
         </div>
 
         {/* Error Banner */}
@@ -231,6 +240,15 @@ export default function TransactionsPage() {
             <p className="text-sm text-[var(--color-text-dim)] mt-2">
               Start borrowing to see your transaction history
             </p>
+            <a
+              href={`https://explorer-mezame.shardeum.org/address/${wallet.address}?tab=txs`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-400 rounded-lg transition-all border border-cyan-500/30"
+            >
+              <ExternalLink size={16} />
+              View on Block Explorer
+            </a>
           </div>
         ) : (
           <div className="space-y-3">
