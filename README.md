@@ -48,6 +48,7 @@ Visit [http://localhost:3000](http://localhost:3000) to see the application runn
 ### Environment Configuration
 
 See [ENV_CONFIG_GUIDE.md](./ENV_CONFIG_GUIDE.md) for detailed environment setup including:
+
 - RPC endpoints configuration
 - Smart contract addresses
 - Network settings
@@ -95,17 +96,18 @@ PayFi-Cred operates on the Shardeum EVM Testnet (Chain ID: 8119) with multiple i
 
 ### Core Contracts
 
-| Contract | Address | Purpose |
-|----------|---------|---------|
-| **FlexCreditCore** | `0xbC3fC58882Aa2c49038f35cB7bbDe7cc118bf464` | Main credit management |
-| **IncomeProofVerifier** | `0x0b82685505Ef4744Ee0744D777E9D3f9cc48714f` | Income verification via vlayer proofs |
-| **AgentWalletFactory** | `0x5E2182aA00F15D099b3b563c19f301B4160c30B0` | Factory for AI agent smart wallets |
-| **AgentPolicy** | `0x4458D6534E83C933d5C54A41434CA74362d0362E` | Agent spending policy enforcement |
+| Contract                     | Address                                      | Purpose                                |
+| ---------------------------- | -------------------------------------------- | -------------------------------------- |
+| **FlexCreditCore**           | `0xbC3fC58882Aa2c49038f35cB7bbDe7cc118bf464` | Main credit management                 |
+| **IncomeProofVerifier**      | `0x0b82685505Ef4744Ee0744D777E9D3f9cc48714f` | Income verification via vlayer proofs  |
+| **AgentWalletFactory**       | `0x5E2182aA00F15D099b3b563c19f301B4160c30B0` | Factory for AI agent smart wallets     |
+| **AgentPolicy**              | `0x4458D6534E83C933d5C54A41434CA74362d0362E` | Agent spending policy enforcement      |
 | **AgentPerformanceVerifier** | `0x30698293F53c856530F7D847a103C31709269541` | Agent trading performance verification |
 
 ### Key Functions
 
 #### Credit Management
+
 ```typescript
 // Get user's complete credit information
 const creditInfo = await getCreditInfo(userAddress);
@@ -118,6 +120,7 @@ await repayCredit(amountInWei);
 ```
 
 #### Income Verification
+
 ```typescript
 // Submit income proof (via vlayer)
 await submitIncomeProof(proofHash, incomeBucket);
@@ -126,6 +129,7 @@ await submitIncomeProof(proofHash, incomeBucket);
 ```
 
 #### Agent Wallets
+
 ```typescript
 // Create new agent wallet
 const walletAddress = await createWallet(initialSpendingCap);
@@ -136,15 +140,107 @@ await executeAction(targetAddress, value, data);
 
 For complete smart contract documentation, see [SMART_CONTRACTS_SUMMARY.md](./SMART_CONTRACTS_SUMMARY.md).
 
+## 🔒 Privacy-First Architecture with Inco
+
+> **"Privacy is the next frontier of Web3, and Inco is bringing it on-chain."**
+
+PayFi-Cred leverages **Inco's confidential computing technology** - the TLS/SSL equivalent for Web3. Inco enables smart contracts to process encrypted data on public blockchains, ensuring sensitive financial information remains private while still being verifiable on-chain.
+
+### Why Privacy Matters in DeFi
+
+Traditional credit systems expose users' complete financial profiles:
+
+- **Transaction history analysis** reveals spending habits and lifestyle
+- **Credit limit & risk score** indicates financial health and borrowing capacity
+- **Agent policies & category limits** show behavioral patterns and preferences
+
+**Without privacy, this data becomes a permanent public record** that can be used for:
+
+- Targeted advertising and surveillance
+- Financial discrimination
+- Identity theft and fraud
+- Reputation damage
+
+### Inco's Technology: TLS/SSL for Web3
+
+Inco provides **confidential smart contracts** that can:
+
+- ✅ **Process encrypted data** without decryption
+- ✅ **Maintain data privacy** while enabling computation
+- ✅ **Generate zero-knowledge proofs** of correct execution
+- ✅ **Work on any EVM-compatible chain** (including Shardeum)
+
+**Challenge Context**: Build next-gen, privacy-first dApps where sensitive data stays private while being processed on-chain. $600 USD prize for innovative confidential DeFi applications.
+
+### incoJS Integration in PayFi-Cred
+
+PayFi-Cred uses Inco's JavaScript SDK (`@inco/js`) for confidential credit scoring and income verification.
+
+#### incoJS Integration Test Results
+
+**Automated Tests:**
+
+1. ✅ **Initialization**: Successfully initialized inco Lightning on chain 84532
+2. ✅ **Wallet Connection**: Wallet connected: 0x202d...bcd6
+3. ✅ **Encryption**: Encryption ready. Use manual test below to encrypt values.
+
+**Manual Testing:**
+
+1. **Encrypt a Credit Score** (750)
+
+   ```
+   ✓ Encrypted Handle: 0xdb3b7d04a3a513c0649316acd0c15fe2556f00d4f5851621dc31027c63000800000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000bb04826c780ee130e4bc5acf780c99fd81bed41f57b133f6569a059fb8d856c534c5a0d82d04eae6427c8e02202b4ebbf8854a726f810bf27c77403ec201cf1a0e0bf3312fa4821d04e493ad4282c1c0bbdf65a2e0123d8d85dbdf28856d4c027244c5d1be2f4f850cc4fb7737bb70a0597d8314e4b10614443542ea596dc193c91dca809ea01896b39cedea1f94d93783f4da2244e5d58818c0146d7628311a6499d3be5d4048659d0173e70ec182c17df6c7a4ae6aee6ea7e5f6150000000000
+
+   🔓 Decrypted Value: 750 (Credit Score)
+   ```
+
+2. **Eligibility Check** (Score >= 700): ✅ **ELIGIBLE**
+
+#### Prerequisites Checklist
+
+- ✅ MetaMask or Web3 wallet installed and connected
+- ✅ Connected to Base Sepolia testnet
+- ✅ Have test ETH for gas fees (faucet available)
+- ✅ `@inco/js` package installed (`npm install @inco/js`)
+
+#### Implementation Details
+
+```typescript
+// Initialize Inco client
+import { Inco } from "@inco/js";
+
+const inco = new Inco({
+  chainId: 84532, // Base Sepolia
+  provider: window.ethereum,
+});
+
+// Encrypt sensitive credit data
+const encryptedScore = await inco.encrypt(750);
+console.log("Encrypted handle:", encryptedScore.handle);
+
+// Store encrypted data on-chain (requires contract deployment)
+await contract.allow(encryptedScore.handle, userAddress);
+
+// Perform confidential computations
+const isEligible = await contract.checkEligibility(encryptedScore.handle);
+```
+
+**⚠️ Important Note:** Attested compute requires encrypted handles to be stored and allowed on-chain first via smart contracts using `e.allow(handle, address)`.
+
+For complete Inco integration details, see [INCO_INTEGRATION.md](./INCO_INTEGRATION.md).
+
 ## 🌐 API Endpoints
 
 ### Agent Risk Analysis
+
 ```
 POST /api/agent-risk
 ```
+
 Analyzes agent trading performance and generates risk scores.
 
 **Request Body:**
+
 ```json
 {
   "tradeData": {
@@ -157,21 +253,26 @@ Analyzes agent trading performance and generates risk scores.
 ```
 
 ### PAN Verification
+
 ```
 POST /api/pan-verification/send-otp
 POST /api/pan-verification/verify-otp
 ```
+
 India-specific KYC verification using PAN card numbers.
 
 ### Income Verification
+
 ```
 POST /api/verify-income
 ```
+
 Verifies user income through various sources (bank statements, payslips, etc.).
 
 ## 💾 Data Storage
 
 ### Client-Side Storage (IndexedDB)
+
 - **Database**: `IncoEncryptionDB`
 - **Purpose**: Secure storage of encrypted user data
 - **Tables**:
@@ -179,6 +280,7 @@ Verifies user income through various sources (bank statements, payslips, etc.).
   - `data`: Encrypted user information
 
 ### Smart Contract Storage
+
 - **Network**: Shardeum EVM Testnet
 - **Persistence**: All credit data stored on-chain
 - **Privacy**: Zero-knowledge proofs for sensitive data
@@ -186,15 +288,18 @@ Verifies user income through various sources (bank statements, payslips, etc.).
 ## 🔐 Security Features
 
 ### Zero-Knowledge Proofs
+
 - **vlayer Integration**: Privacy-preserving income verification
 - **Proof Generation**: Client-side proof creation without revealing sensitive data
 
 ### Smart Contract Security
+
 - **Access Control**: Only authorized contracts can modify user data
 - **Reentrancy Protection**: Built-in guards against reentrancy attacks
 - **Input Validation**: Comprehensive validation of all contract inputs
 
 ### Frontend Security
+
 - **MetaMask Integration**: Secure wallet connection
 - **Transaction Signing**: User approval required for all blockchain writes
 - **Input Sanitization**: All user inputs validated and sanitized
@@ -204,20 +309,24 @@ Verifies user income through various sources (bank statements, payslips, etc.).
 ### Core Components
 
 #### Wallet Components
+
 - **WalletButton**: MetaMask connection with network switching
 - **NetworkChecker**: Automatic network validation and switching
 
 #### Credit Components
+
 - **CreditCard**: Animated credit card with utilization display
 - **CreditScoreGauge**: Real-time credit score visualization
 - **CreditNFT**: Soulbound NFT display with metadata
 
 #### Agent Components
+
 - **AgentWalletBalance**: Real-time agent wallet statistics
 - **AgentPerformanceManager**: Agent performance tracking
 - **AgentPolicyManager**: Spending policy configuration
 
 ### UI Library
+
 - **Apple Cards Carousel**: Interactive feature showcase
 - **Infinite Moving Cards**: Smooth testimonial animations
 - **Wobble Cards**: Animated feature cards with noise textures
@@ -250,12 +359,14 @@ NODE_ENV=production
 ## 🧪 Testing
 
 ### Smart Contract Testing
+
 ```bash
 # Run contract tests (if available)
 npm run test:contracts
 ```
 
 ### Frontend Testing
+
 ```bash
 # Run component tests
 npm run test
@@ -267,20 +378,33 @@ npm run test:e2e
 ## 📚 Documentation
 
 ### Core Documentation
+
 - **[PROJECT_SUMMARY.md](./PROJECT_SUMMARY.md)** - Complete project overview and status
 - **[SMART_CONTRACTS_SUMMARY.md](./SMART_CONTRACTS_SUMMARY.md)** - Detailed smart contract documentation
 - **[QUICK_START.md](./QUICK_START.md)** - Getting started guide
 - **[ENV_CONFIG_GUIDE.md](./ENV_CONFIG_GUIDE.md)** - Environment configuration
 
 ### Integration Guides
+
 - **[INCO_INTEGRATION.md](./INCO_INTEGRATION.md)** - IncoJS encryption integration
 - **[PARTNER_APPS_INTEGRATION.md](./PARTNER_APPS_INTEGRATION.md)** - Partner application integration
 - **[THEME_SYSTEM.md](./THEME_SYSTEM.md)** - Dark/light theme system
 
+### Inco Privacy Features
+
+- **[INCO_STATUS.md](./INCO_STATUS.md)** - Current Inco integration status
+- **[INCO_VERIFICATION_GUIDE.md](./INCO_VERIFICATION_GUIDE.md)** - Inco testing and verification
+- **[INCO_NEXT_STEPS.md](./INCO_NEXT_STEPS.md)** - Future Inco development roadmap
+- **[INCO_COMMIT_SUMMARY.md](./INCO_COMMIT_SUMMARY.md)** - Inco implementation history
+
 ### Development Resources
+
 - **[INCO_DEV_MODE.md](./INCO_DEV_MODE.md)** - Development mode features
 - **[DYNAMIC_API_IMPLEMENTATION.md](./DYNAMIC_API_IMPLEMENTATION.md)** - API implementation details
 - **[RESET_INSTRUCTIONS.md](./RESET_INSTRUCTIONS.md)** - Development reset procedures
+- **[DARK_THEME_COMPLETE.md](./DARK_THEME_COMPLETE.md)** - Complete theme system guide
+- **[SPENDING_CAP_UI_ADDITIONS.md](./SPENDING_CAP_UI_ADDITIONS.md)** - UI spending cap features
+- **[GITHUB_COMMIT_SUMMARY.md](./GITHUB_COMMIT_SUMMARY.md)** - Complete commit history
 
 ## 🤝 Contributing
 
