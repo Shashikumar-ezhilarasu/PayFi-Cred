@@ -10,7 +10,7 @@ import { CONTRACT_ADDRESSES, CONTRACT_ABIS } from './web3-config';
  */
 export async function createAgentWallet(
   signer: ethers.Signer,
-  initialSpendingCap: number // in USDC (e.g., 1000 = $1000)
+  initialSpendingCap: number // in SHM (e.g., 1000 = 1000 SHM)
 ): Promise<string> {
   const factory = new ethers.Contract(
     CONTRACT_ADDRESSES.AgentWalletFactory,
@@ -18,7 +18,7 @@ export async function createAgentWallet(
     signer
   );
 
-  const capInWei = ethers.parseUnits(initialSpendingCap.toString(), 6); // USDC has 6 decimals
+  const capInWei = ethers.parseEther(initialSpendingCap.toString()); // SHM has 18 decimals
   
   console.log('🏭 Creating agent wallet with spending cap:', initialSpendingCap);
   const tx = await factory.createWallet(capInWei);
@@ -115,10 +115,10 @@ export async function getAgentWalletStats(
   const stats = await wallet.getStats();
   
   return {
-    balance: Number(stats.balance) / 1e18, // ETH balance
-    creditAllocated: Number(stats._creditAllocated) / 1e6, // USDC
-    creditUsed: Number(stats._creditUsed) / 1e6, // USDC
-    spendingCap: Number(stats._spendingCap) / 1e6, // USDC
+    balance: Number(ethers.formatEther(stats.balance)), // ETH/SHM balance
+    creditAllocated: Number(ethers.formatEther(stats._creditAllocated)), // SHM (18 decimals)
+    creditUsed: Number(ethers.formatEther(stats._creditUsed)), // SHM (18 decimals)
+    spendingCap: Number(ethers.formatEther(stats._spendingCap)), // SHM (18 decimals)
     reputation: Number(stats._reputation),
     nonce: Number(stats._nonce),
   };
@@ -129,10 +129,10 @@ export async function getAgentWalletStats(
  */
 export async function depositToAgentWallet(
   walletAddress: string,
-  amount: number, // in ETH
+  amount: number, // in SHM
   signer: ethers.Signer
 ): Promise<string> {
- const amountInWei = ethers.parseEther(amount.toString());
+  const amountInWei = ethers.parseEther(amount.toString());
   
   const tx = await signer.sendTransaction({
     to: walletAddress,
@@ -148,7 +148,7 @@ export async function depositToAgentWallet(
  */
 export async function repayCreditFor(
   borrowerAddress: string,
-  amount: number, // in USDC
+  amount: number, // in SHM
   signer: ethers.Signer
 ): Promise<string> {
   const flexCreditCore = new ethers.Contract(
@@ -157,7 +157,7 @@ export async function repayCreditFor(
     signer
   );
 
-  const amountInWei = ethers.parseUnits(amount.toString(), 6); // USDC has 6 decimals
+  const amountInWei = ethers.parseEther(amount.toString()); // SHM has 18 decimals
   
   // Note: repayCreditFor expects ETH to be sent
   const tx = await flexCreditCore.repayCreditFor(borrowerAddress, amountInWei, {

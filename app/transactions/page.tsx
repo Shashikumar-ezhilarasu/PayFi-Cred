@@ -36,7 +36,7 @@ export default function TransactionsPage() {
     setError('');
 
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const flexCreditCore = new ethers.Contract(
         CONTRACT_ADDRESSES.FlexCreditCore,
         CONTRACT_ABIS.FlexCreditCore,

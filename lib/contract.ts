@@ -33,7 +33,7 @@ export const getContract = () => {
     throw new Error('Ethereum provider not found');
   }
   
-  const provider = new ethers.BrowserProvider(window.ethereum);
+  const provider = new ethers.BrowserProvider(window.ethereum as any);
   return new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
 };
 
@@ -43,7 +43,7 @@ export const getContractWithSigner = async () => {
     throw new Error('Ethereum provider not found');
   }
   
-  const provider = new ethers.BrowserProvider(window.ethereum);
+  const provider = new ethers.BrowserProvider(window.ethereum as any);
   const signer = await provider.getSigner();
   return new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 };

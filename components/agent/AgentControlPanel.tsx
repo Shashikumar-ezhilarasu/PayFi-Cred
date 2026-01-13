@@ -36,7 +36,7 @@ export function AgentControlPanel({ agentWalletAddress, userAddress }: AgentCont
 
   const loadAgentData = async () => {
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       
       // Get agent balance
       const balance = await provider.getBalance(agentWalletAddress);
@@ -54,7 +54,7 @@ export function AgentControlPanel({ agentWalletAddress, userAddress }: AgentCont
 
       // Get spending cap
       const cap = await agentWallet.spendingCap();
-      setSpendingCap(ethers.formatUnits(cap, 6)); // USDC 6 decimals
+      setSpendingCap(ethers.formatEther(cap)); // SHM 18 decimals
     } catch (err) {
       console.error('Error loading agent data:', err);
     }
@@ -82,7 +82,7 @@ export function AgentControlPanel({ agentWalletAddress, userAddress }: AgentCont
     setSuccess('');
 
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const signer = await provider.getSigner();
 
       const tx = await signer.sendTransaction({
@@ -111,7 +111,7 @@ export function AgentControlPanel({ agentWalletAddress, userAddress }: AgentCont
     setSuccess('');
 
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const signer = await provider.getSigner();
 
       const agentWallet = new ethers.Contract(
@@ -191,7 +191,7 @@ export function AgentControlPanel({ agentWalletAddress, userAddress }: AgentCont
     setSuccess('');
 
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const signer = await provider.getSigner();
 
       const agentWallet = new ethers.Contract(
@@ -200,14 +200,14 @@ export function AgentControlPanel({ agentWalletAddress, userAddress }: AgentCont
         signer
       );
 
-      const newCap = ethers.parseUnits(newSpendingCap, 6); // USDC 6 decimals
+      const newCap = ethers.parseEther(newSpendingCap); // SHM 18 decimals
       
       console.log('Updating spending cap to:', newSpendingCap);
       const tx = await agentWallet.updateSpendingCap(newCap);
       console.log('Update transaction sent:', tx.hash);
       await tx.wait();
 
-      setSuccess(`Spending cap updated to $${newSpendingCap}!`);
+      setSuccess(`Spending cap updated to ${newSpendingCap} SHM!`);
       setNewSpendingCap('');
       await loadAgentData();
     } catch (err: any) {
@@ -438,11 +438,11 @@ export function AgentControlPanel({ agentWalletAddress, userAddress }: AgentCont
         <div className="space-y-4">
           <div className="bg-black/30 p-4 rounded-lg">
             <p className="text-sm text-[var(--color-text-dim)] mb-1">Current Spending Cap</p>
-            <p className="text-2xl font-bold text-orange-400">${Number(spendingCap).toFixed(2)} USDC</p>
+            <p className="text-2xl font-bold text-orange-400">{Number(spendingCap).toFixed(2)} SHM</p>
           </div>
 
           <div>
-            <label className="block text-sm text-[var(--color-text-dim)] mb-2">New Spending Cap (USDC)</label>
+            <label className="block text-sm text-[var(--color-text-dim)] mb-2">New Spending Cap (SHM)</label>
             <div className="flex gap-2">
               <input
                 type="number"

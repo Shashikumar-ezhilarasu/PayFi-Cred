@@ -50,7 +50,7 @@ export default function ProfilePage() {
 
       try {
         // Connect to current network via MetaMask
-        const browserProvider = new ethers.BrowserProvider(window.ethereum);
+        const browserProvider = new ethers.BrowserProvider(window.ethereum as any);
         const network = await browserProvider.getNetwork();
         
         setNetworkInfo({

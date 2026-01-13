@@ -83,12 +83,13 @@ export default function AgentSettingsPage() {
             {/* Auto Approve Threshold */}
             <div>
               <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Auto-Approve Threshold (USD)
+                Auto-Approve Threshold (ETH)
               </label>
               <input
                 type="number"
-                value={localPolicy.autoApproveThreshold}
-                onChange={(e) => updateField('autoApproveThreshold', parseFloat(e.target.value))}
+                step="0.001"
+                value={localPolicy.requireApprovalAbove}
+                onChange={(e) => updateField('requireApprovalAbove', parseFloat(e.target.value))}
                 className="w-full px-4 py-2 bg-[var(--elev)] border border-[var(--color-divider)] rounded-lg text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
               />
               <p className="text-xs text-[var(--color-muted)] mt-1">
@@ -99,12 +100,13 @@ export default function AgentSettingsPage() {
             {/* Daily Spending Limit */}
             <div>
               <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Daily Spending Limit (USD)
+                Daily Spending Limit (ETH)
               </label>
               <input
                 type="number"
-                value={localPolicy.dailySpendingLimit}
-                onChange={(e) => updateField('dailySpendingLimit', parseFloat(e.target.value))}
+                step="0.001"
+                value={localPolicy.dailySpendLimit}
+                onChange={(e) => updateField('dailySpendLimit', parseFloat(e.target.value))}
                 className="w-full px-4 py-2 bg-[var(--elev)] border border-[var(--color-divider)] rounded-lg text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
               />
               <p className="text-xs text-[var(--color-muted)] mt-1">
@@ -112,35 +114,18 @@ export default function AgentSettingsPage() {
               </p>
             </div>
 
-            {/* Monthly Spending Limit */}
+            {/* Penalty Mode */}
             <div>
               <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Monthly Spending Limit (USD)
-              </label>
-              <input
-                type="number"
-                value={localPolicy.monthlySpendingLimit}
-                onChange={(e) => updateField('monthlySpendingLimit', parseFloat(e.target.value))}
-                className="w-full px-4 py-2 bg-[var(--elev)] border border-[var(--color-divider)] rounded-lg text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
-              />
-              <p className="text-xs text-[var(--color-muted)] mt-1">
-                Maximum total spending allowed per month
-              </p>
-            </div>
-
-            {/* Risk Level */}
-            <div>
-              <label className="block text-sm font-medium text-[var(--color-text)] mb-2">
-                Risk Tolerance
+                Penalty Mode
               </label>
               <select
-                value={localPolicy.riskTolerance}
-                onChange={(e) => updateField('riskTolerance', e.target.value)}
+                value={localPolicy.penaltyMode}
+                onChange={(e) => updateField('penaltyMode', e.target.value as 'strict' | 'relaxed')}
                 className="w-full px-4 py-2 bg-[var(--elev)] border border-[var(--color-divider)] rounded-lg text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
               >
-                <option value="conservative">Conservative</option>
-                <option value="moderate">Moderate</option>
-                <option value="aggressive">Aggressive</option>
+                <option value="relaxed">Relaxed</option>
+                <option value="strict">Strict</option>
               </select>
               <p className="text-xs text-[var(--color-muted)] mt-1">
                 How strict should the agent be with approvals
@@ -153,26 +138,26 @@ export default function AgentSettingsPage() {
             <label className="flex items-center gap-3 cursor-pointer">
               <input
                 type="checkbox"
-                checked={localPolicy.requireManualApprovalForLargeTransactions}
+                checked={localPolicy.enabled}
                 onChange={(e) =>
-                  updateField('requireManualApprovalForLargeTransactions', e.target.checked)
+                  updateField('enabled', e.target.checked)
                 }
                 className="w-5 h-5 rounded border-[var(--color-divider)] bg-[var(--elev)] checked:bg-[var(--color-accent)] focus:ring-[var(--color-accent)]"
               />
               <span className="text-sm text-[var(--color-text)]">
-                Require manual approval for large transactions
+                Enable agent policy
               </span>
             </label>
 
             <label className="flex items-center gap-3 cursor-pointer">
               <input
                 type="checkbox"
-                checked={localPolicy.allowRecurringPayments}
-                onChange={(e) => updateField('allowRecurringPayments', e.target.checked)}
+                checked={localPolicy.autoRepay}
+                onChange={(e) => updateField('autoRepay', e.target.checked)}
                 className="w-5 h-5 rounded border-[var(--color-divider)] bg-[var(--elev)] checked:bg-[var(--color-accent)] focus:ring-[var(--color-accent)]"
               />
               <span className="text-sm text-[var(--color-text)]">
-                Allow automatic approval of recurring payments
+                Enable automatic repayment
               </span>
             </label>
           </div>
@@ -212,62 +197,6 @@ export default function AgentSettingsPage() {
               </div>
             ))}
           </div>
-        </motion.div>
-
-        {/* Trusted Merchants */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="card p-6"
-        >
-          <h2 className="text-xl font-bold neon-text mb-4">Trusted Merchants</h2>
-          <p className="text-sm text-[var(--color-text-alt)] mb-4">
-            Transactions from these merchants will always be auto-approved
-          </p>
-
-          <div className="flex flex-wrap gap-2">
-            {localPolicy.trustedMerchants && localPolicy.trustedMerchants.length > 0 ? (
-              localPolicy.trustedMerchants.map((merchant) => (
-                <span
-                  key={merchant}
-                  className="px-3 py-1 bg-[var(--elev)] border border-[var(--color-accent)]/30 rounded-full text-sm text-[var(--color-text)]"
-                >
-                  {merchant}
-                </span>
-              ))
-            ) : (
-              <p className="text-sm text-[var(--color-text-dim)]">No trusted merchants configured yet</p>
-            )}
-          </div>
-        </motion.div>
-
-        {/* Blocked Merchants */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="card p-6"
-        >
-          <h2 className="text-xl font-bold neon-text mb-4">Blocked Merchants</h2>
-          <p className="text-sm text-[var(--color-text-alt)] mb-4">
-            Transactions from these merchants will always be rejected
-          </p>
-
-          {!localPolicy.blockedMerchants || localPolicy.blockedMerchants.length === 0 ? (
-            <p className="text-sm text-[var(--color-muted)] italic">No blocked merchants</p>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {localPolicy.blockedMerchants?.map((merchant) => (
-                <span
-                  key={merchant}
-                  className="px-3 py-1 bg-red-500/20 border border-red-500/30 rounded-full text-sm text-red-400"
-                >
-                  {merchant}
-                </span>
-              ))}
-            </div>
-          )}
         </motion.div>
       </div>
     </div>

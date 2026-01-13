@@ -15,7 +15,7 @@ export default function DebugPage() {
         throw new Error('No crypto wallet found');
       }
 
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       
       // Contracts
       const flexCreditCore = new Contract(
@@ -132,7 +132,7 @@ export default function DebugPage() {
                   onClick={async () => {
                     try {
                       if (!window.ethereum) return;
-                      const provider = new ethers.BrowserProvider(window.ethereum);
+                      const provider = new ethers.BrowserProvider(window.ethereum as any);
                       const signer = await provider.getSigner();
                       const contract = new Contract(
                         CONTRACT_ADDRESSES.FlexCreditCore,

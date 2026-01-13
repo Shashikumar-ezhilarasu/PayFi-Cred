@@ -61,7 +61,7 @@ export default function OnboardingPage() {
       setLoading(true);
       setError('');
       
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const accounts = await provider.send("eth_requestAccounts", []);
       const address = accounts[0];
       
@@ -93,7 +93,7 @@ export default function OnboardingPage() {
       
       console.log('🔍 Analyzing wallet transaction history on Sepolia...');
       
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const currentBlock = await provider.getBlockNumber();
       
       // Fetch last 100 blocks of transactions
@@ -107,21 +107,23 @@ export default function OnboardingPage() {
             for (const tx of block.transactions) {
               if (typeof tx === 'string') continue;
               
+              const txObj = tx as any; // Type assertion to fix TypeScript errors
+              
               // Only count transactions involving this wallet
-              if (tx.from.toLowerCase() === address.toLowerCase() || 
-                  tx.to?.toLowerCase() === address.toLowerCase()) {
+              if (txObj.from?.toLowerCase() === address.toLowerCase() || 
+                  txObj.to?.toLowerCase() === address.toLowerCase()) {
                 
                 // Avoid duplicates
-                if (!txHashes.has(tx.hash)) {
-                  txHashes.add(tx.hash);
+                if (!txHashes.has(txObj.hash)) {
+                  txHashes.add(txObj.hash);
                   transactions.push({
-                    hash: tx.hash,
-                    from: tx.from,
-                    to: tx.to || 'Contract Creation',
-                    value: ethers.formatEther(tx.value || 0),
+                    hash: txObj.hash,
+                    from: txObj.from,
+                    to: txObj.to || 'Contract Creation',
+                    value: ethers.formatEther(txObj.value || 0),
                     blockNumber: block.number,
                     timestamp: block.timestamp,
-                    type: tx.from.toLowerCase() === address.toLowerCase() ? 'sent' : 'received'
+                    type: txObj.from?.toLowerCase() === address.toLowerCase() ? 'sent' : 'received'
                   });
                 }
               }

@@ -49,7 +49,7 @@ export default function AgentWalletsPage() {
 
     setLoading(true);
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const walletAddresses = await getUserAgentWallets(wallet.address, provider);
 
       const walletsWithStats = await Promise.all(
@@ -78,7 +78,7 @@ export default function AgentWalletsPage() {
     setError('');
 
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const signer = await provider.getSigner();
 
       const walletAddress = await createAgentWallet(signer, Number(spendingCap));
@@ -145,7 +145,7 @@ export default function AgentWalletsPage() {
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <label className="block text-sm text-[var(--color-text-dim)] mb-2">
-                Initial Spending Cap (USDC)
+                Initial Spending Cap (SHM)
               </label>
               <input
                 type="number"
@@ -159,7 +159,7 @@ export default function AgentWalletsPage() {
             <div className="flex items-end">
               <button
                 onClick={handleCreateWallet}
-                disabled={creating || !spendingCap}
+                disabled={!spendingCap}
                 className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:from-gray-600 disabled:to-gray-600 rounded-lg font-semibold transition-all"
               >
                 {creating ? 'Creating...' : 'Create Wallet'}

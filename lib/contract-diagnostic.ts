@@ -22,7 +22,7 @@ const ADDRESSES = {
  * Check if contract exists and get its bytecode
  */
 export async function checkContractExists(address: string) {
-  const provider = new ethers.BrowserProvider(window.ethereum);
+  const provider = new ethers.BrowserProvider(window.ethereum as any);
   const code = await provider.getCode(address);
   
   console.log(`\n📍 Contract at ${address}`);
@@ -36,7 +36,7 @@ export async function checkContractExists(address: string) {
  * Try different function signatures to find the correct one
  */
 export async function findCorrectFunction(contractAddress: string) {
-  const provider = new ethers.BrowserProvider(window.ethereum);
+  const provider = new ethers.BrowserProvider(window.ethereum as any);
   const signer = await provider.getSigner();
   const userAddress = await signer.getAddress();
   

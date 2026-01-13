@@ -32,7 +32,7 @@ export function AgentWalletBalance({
     setLoading(true);
     setError('');
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const walletStats = await getAgentWalletStats(walletAddress, provider);
       setStats(walletStats);
     } catch (err: any) {

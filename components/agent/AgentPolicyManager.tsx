@@ -84,10 +84,10 @@ export default function AgentPolicyManager({ agentWalletAddress }: AgentPolicyMa
       const agentId = ethers.id(agentWalletAddress);
       const contractPolicy = await getAgentPolicyContract(wallet.address, agentId);
       
-      // Convert to local policy format
+      // Convert to local policy format (convert from Wei to SHM)
       setPolicyForm({
-        dailyLimit: contractPolicy.dailyLimit,
-        perTxLimit: contractPolicy.perTxLimit,
+        dailyLimit: ethers.formatEther(contractPolicy.dailyLimit),
+        perTxLimit: ethers.formatEther(contractPolicy.perTxLimit),
         canUseCredit: contractPolicy.canUseCredit,
         allowedCategories: [], // Not stored on-chain in current implementation
         whitelistedAddresses: [] // Not stored on-chain in current implementation
@@ -121,10 +121,11 @@ export default function AgentPolicyManager({ agentWalletAddress }: AgentPolicyMa
       
       // Note: Current contract only stores dailyLimit, perTxLimit, and canUseCredit
       // allowedCategories and whitelistedAddresses are stored locally
+      // Convert from SHM to Wei using parseEther, then to string
       const txHash = await setAgentPolicyContract(
         agentId,
-        policyForm.dailyLimit,
-        policyForm.perTxLimit,
+        ethers.parseEther(policyForm.dailyLimit).toString(),
+        ethers.parseEther(policyForm.perTxLimit).toString(),
         policyForm.canUseCredit ?? true
       );
       
@@ -263,7 +264,7 @@ export default function AgentPolicyManager({ agentWalletAddress }: AgentPolicyMa
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm text-gray-400 mb-2">Daily Limit (USDC)</label>
+                <label className="block text-sm text-gray-400 mb-2">Daily Limit (SHM)</label>
                 <input
                   type="number"
                   value={policyForm.dailyLimit}
@@ -272,7 +273,7 @@ export default function AgentPolicyManager({ agentWalletAddress }: AgentPolicyMa
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-2">Per Transaction Limit (USDC)</label>
+                <label className="block text-sm text-gray-400 mb-2">Per Transaction Limit (SHM)</label>
                 <input
                   type="number"
                   value={policyForm.perTxLimit}

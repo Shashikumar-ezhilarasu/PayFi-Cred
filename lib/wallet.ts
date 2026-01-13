@@ -17,16 +17,16 @@ export const connectWallet = async (): Promise<{ address: string; network: strin
     }
 
     // Request account access
-    const accounts = await window.ethereum.request({
+    const accounts = await (window.ethereum as any).request({
       method: 'eth_requestAccounts',
-    });
+    }) as string[];
 
     if (!accounts || accounts.length === 0) {
       throw new Error('No accounts found');
     }
 
     // Get network info
-    const provider = new ethers.BrowserProvider(window.ethereum);
+    const provider = new ethers.BrowserProvider(window.ethereum as any);
     const network = await provider.getNetwork();
 
     return {
@@ -51,7 +51,7 @@ export const getWalletBalance = async (address: string): Promise<string> => {
   try {
     if (!window.ethereum) return '0';
 
-    const provider = new ethers.BrowserProvider(window.ethereum);
+    const provider = new ethers.BrowserProvider(window.ethereum as any);
     const balance = await provider.getBalance(address);
     return ethers.formatEther(balance);
   } catch (error) {
@@ -110,7 +110,7 @@ export const checkNetwork = async (expectedChainId: number): Promise<boolean> =>
   try {
     if (!window.ethereum) return false;
 
-    const provider = new ethers.BrowserProvider(window.ethereum);
+    const provider = new ethers.BrowserProvider(window.ethereum as any);
     const network = await provider.getNetwork();
     return Number(network.chainId) === expectedChainId;
   } catch (error) {
@@ -124,7 +124,7 @@ export const switchNetwork = async (chainId: number): Promise<boolean> => {
   try {
     if (!window.ethereum) return false;
 
-    await window.ethereum.request({
+    await (window.ethereum as any).request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: `0x${chainId.toString(16)}` }],
     });
@@ -140,22 +140,22 @@ export const switchNetwork = async (chainId: number): Promise<boolean> => {
 export const onAccountsChanged = (callback: (accounts: string[]) => void) => {
   if (!window.ethereum) return;
 
-  window.ethereum.on('accountsChanged', callback);
+  (window.ethereum as any).on?.('accountsChanged', callback);
 };
 
 // Listen for network changes
 export const onChainChanged = (callback: (chainId: string) => void) => {
   if (!window.ethereum) return;
 
-  window.ethereum.on('chainChanged', callback);
+  (window.ethereum as any).on?.('chainChanged', callback);
 };
 
 // Remove listeners
 export const removeWalletListeners = () => {
   if (!window.ethereum) return;
 
-  window.ethereum.removeAllListeners('accountsChanged');
-  window.ethereum.removeAllListeners('chainChanged');
+  (window.ethereum as any).removeListener?.('accountsChanged', () => {});
+  (window.ethereum as any).removeListener?.('chainChanged', () => {});
 };
 
 // PLACEHOLDER: Mint Credit Identity NFT
@@ -217,10 +217,3 @@ export const repayTransaction = async (
   // Return mock transaction hash
   return '0x' + Math.random().toString(16).substring(2, 66);
 };
-
-// Type definitions for window.ethereum
-declare global {
-  interface Window {
-    ethereum?: any;
-  }
-}

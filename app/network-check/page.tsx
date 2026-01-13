@@ -23,7 +23,7 @@ export default function NetworkVerificationPage() {
       checks.metamask = '✅ MetaMask installed';
 
       // Get current network from MetaMask
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const network = await provider.getNetwork();
       const chainId = Number(network.chainId);
 

@@ -33,7 +33,7 @@ export default function ContractDiagnosticPage() {
         return;
       }
 
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const signer = await provider.getSigner();
       const userAddress = await signer.getAddress();
 

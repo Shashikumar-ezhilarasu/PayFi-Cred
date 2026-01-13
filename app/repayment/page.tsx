@@ -44,7 +44,7 @@ export default function RepaymentPage() {
 
     try {
       const amountInWei = ethers.parseUnits(repayAmount, 6); // USDC has 6 decimals
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const signer = await provider.getSigner();
 
       // STEP 1: Withdraw from AgentWallet (if user has one)

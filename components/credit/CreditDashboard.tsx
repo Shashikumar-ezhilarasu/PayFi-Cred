@@ -187,7 +187,7 @@ export default function CreditDashboard() {
       setTxStatus({ type: null, message: '' });
       
       // Get user's agent wallets
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const agentWallets = await getUserAgentWallets(wallet.address, provider);
       
       if (agentWallets.length === 0) {

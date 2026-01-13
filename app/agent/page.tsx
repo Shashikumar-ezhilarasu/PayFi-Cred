@@ -61,7 +61,7 @@ function AgentDashboard() {
     const autoConnect = async () => {
       if (typeof window.ethereum !== 'undefined' && !account) {
         try {
-          const provider = new ethers.BrowserProvider(window.ethereum);
+          const provider = new ethers.BrowserProvider(window.ethereum as any);
           const accounts = await provider.listAccounts();
           if (accounts.length > 0) {
             setAccount(accounts[0].address);
@@ -86,7 +86,7 @@ function AgentDashboard() {
 
     setLoadingWallets(true);
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const walletAddresses = await getUserAgentWallets(wallet.address, provider);
 
       const walletsWithStats = await Promise.all(
@@ -115,7 +115,7 @@ function AgentDashboard() {
     setError('');
 
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const signer = await provider.getSigner();
 
       const walletAddress = await createAgentWallet(signer, Number(spendingCap));
@@ -135,15 +135,15 @@ function AgentDashboard() {
   const refreshStats = async (address: string) => {
     try {
       setLoading(true);
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const contract = new ethers.Contract(address, CONTRACT_ABIS.AgentWallet, provider);
       
       const stats = await contract.getStats();
       setAgentStats({
         balance: ethers.formatEther(stats.balance),
-        creditAllocated: ethers.formatUnits(stats._creditAllocated, 6),
-        creditUsed: ethers.formatUnits(stats._creditUsed, 6),
-        spendingCap: ethers.formatUnits(stats._spendingCap, 6),
+        creditAllocated: ethers.formatEther(stats._creditAllocated),
+        creditUsed: ethers.formatEther(stats._creditUsed),
+        spendingCap: ethers.formatEther(stats._spendingCap),
         reputation: stats._reputation.toString(),
         nonce: stats._nonce.toString()
       });
@@ -160,7 +160,7 @@ function AgentDashboard() {
       return;
     }
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
       const accounts = await provider.send("eth_requestAccounts", []);
       setAccount(accounts[0]);
     } catch (error) {
@@ -248,7 +248,7 @@ function AgentDashboard() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 mb-1">Spending Cap</p>
-                  <p className="text-lg font-bold text-purple-400">${Number(agentStats.spendingCap).toFixed(0)}</p>
+                  <p className="text-lg font-bold text-purple-400">{Number(agentStats.spendingCap).toFixed(2)} SHM</p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-400 mb-1">Reputation</p>
@@ -373,8 +373,8 @@ function AgentDashboard() {
           </div>
         )}
 
-        {/* Create Wallet Section - Only show if user has no wallets */}
-        {!loadingWallets && wallets.length === 0 && (
+        {/* Create Wallet Section - Always visible */}
+        {!loadingWallets && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -387,7 +387,7 @@ function AgentDashboard() {
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1">
                 <label className="block text-sm text-gray-400 mb-2">
-                  Initial Spending Cap (USDC)
+                  Initial Spending Cap (SHM)
                 </label>
                 <input
                   type="number"
@@ -401,7 +401,7 @@ function AgentDashboard() {
               <div className="flex items-end">
                 <button
                   onClick={handleCreateWallet}
-                  disabled={creating || !spendingCap}
+                  disabled={!spendingCap}
                   className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 disabled:from-gray-600 disabled:to-gray-600 rounded-lg font-semibold transition-all"
                 >
                   {creating ? 'Creating...' : 'Create Wallet'}
@@ -464,13 +464,13 @@ function AgentDashboard() {
                     <div>
                       <p className="text-xs text-gray-400">Spending Cap</p>
                       <p className="text-lg font-bold text-purple-400">
-                        ${w.spendingCap.toFixed(0)}
+                        {w.spendingCap.toFixed(2)} SHM
                       </p>
                     </div>
                     <div>
                       <p className="text-xs text-gray-400">Credit Used</p>
                       <p className="text-lg font-bold text-yellow-400">
-                        ${w.creditUsed.toFixed(2)}
+                        {w.creditUsed.toFixed(2)} SHM
                       </p>
                     </div>
                     <div>
