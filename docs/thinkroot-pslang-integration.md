@@ -3,9 +3,7 @@
 ![WhatsApp Image 2026-01-13 at 11 31 15 AM](https://github.com/user-attachments/assets/43e05b5a-2168-4c2a-87d2-292421faef5f)
 
 
-## 🎯 Overview
 
-PayFi-Cred received $1,200 investment from ThinkRoot Ventures and utilized their revolutionary PSLang platform to build a comprehensive mobile application. PSLang enables natural language programming, allowing developers to write code in their native tongue.
 
 ## 🔧 PSLang Implementation
 

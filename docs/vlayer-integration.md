@@ -3,7 +3,6 @@
 ## Overview
 
 This project uses **vlayer** to generate zero-knowledge proofs for income verification. vlayer enables privacy-preserving proof generation that allows users to prove their income tier without revealing their actual income data on-chain.
-
 ## Architecture
 
 ```
