@@ -1,5 +1,8 @@
 # Shardeum Integration: High-Performance EVM Blockchain
 
+![WhatsApp Image 2026-01-13 at 11 37 50 AM](https://github.com/user-attachments/assets/3f9e55b8-8d9f-40e4-ad3c-198e7d80ad1f)
+
+
 ## 🎯 Overview
 
 PayFi-Cred operates on Shardeum, a high-performance EVM-compatible blockchain that enables fast, secure, and scalable decentralized credit operations. Shardeum's unique architecture combines the security of traditional blockchains with the speed of modern distributed systems.
