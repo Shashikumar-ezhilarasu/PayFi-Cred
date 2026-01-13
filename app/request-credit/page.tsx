@@ -1,19 +1,32 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { useRouter } from 'next/navigation';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { StatsCard } from '@/components/shared/StatsCard';
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
 import { motion } from 'framer-motion';
-import { CreditCard, Zap, TrendingUp, DollarSign, Activity, CheckCircle, AlertCircle } from 'lucide-react';
+import { CreditCard, Zap, TrendingUp, DollarSign, Activity, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { ethers } from 'ethers';
+import { useCredit as useCreditContract } from '@/lib/contract';
 
 export default function RequestCreditPage() {
-  const { wallet, creditData, assessCredit } = useAppStore();
+  const { wallet, creditData, assessCredit, refreshCreditData } = useAppStore();
   const [loading, setLoading] = useState(false);
+  const [borrowing, setBorrowing] = useState(false);
+  const [borrowAmount, setBorrowAmount] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [borrowError, setBorrowError] = useState<string | null>(null);
+  const [borrowSuccess, setBorrowSuccess] = useState<string | null>(null);
   const router = useRouter();
+
+  // Fetch credit data from blockchain when wallet is connected
+  useEffect(() => {
+    if (wallet.address && wallet.connected) {
+      refreshCreditData();
+    }
+  }, [wallet.address, wallet.connected, refreshCreditData]);
 
   const handleRequestCredit = async () => {
     if (!wallet.address) return;
@@ -32,6 +45,46 @@ export default function RequestCreditPage() {
       console.error('Credit assessment error:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleBorrowCredit = async () => {
+    if (!wallet.address || !borrowAmount) return;
+
+    const amount = parseFloat(borrowAmount);
+    if (isNaN(amount) || amount <= 0) {
+      setBorrowError('Please enter a valid amount');
+      return;
+    }
+
+    if (creditData && amount > creditData.availableBalance) {
+      setBorrowError(`Amount exceeds available balance of ${creditData.availableBalance.toFixed(2)} SHM`);
+      return;
+    }
+
+    setBorrowing(true);
+    setBorrowError(null);
+    setBorrowSuccess(null);
+
+    try {
+      // Convert amount to wei
+      const amountInWei = ethers.parseEther(borrowAmount);
+      
+      // Call the smart contract
+      const txHash = await useCreditContract(amountInWei.toString());
+      
+      setBorrowSuccess(`Successfully borrowed ${borrowAmount} SHM! Tx: ${txHash.substring(0, 10)}...`);
+      setBorrowAmount('');
+      
+      // Refresh credit data from blockchain after borrowing
+      setTimeout(async () => {
+        await refreshCreditData();
+      }, 3000);
+    } catch (err: any) {
+      console.error('Borrow credit error:', err);
+      setBorrowError(err.message || 'Failed to borrow credit. Please try again.');
+    } finally {
+      setBorrowing(false);
     }
   };
 
@@ -73,13 +126,13 @@ export default function RequestCreditPage() {
             <StatsCard
               icon={DollarSign}
               label="Credit Limit"
-              value={`$${creditData.creditLimit.toLocaleString()}`}
-              subtext={`Tier: ${creditData.tier}`}
+              value={`${creditData.creditLimit.toFixed(2)} SHM`}
+              subtext={`Tier: ${creditData.creditTier || creditData.tier || 'Bronze'}`}
             />
             <StatsCard
               icon={TrendingUp}
               label="Available Balance"
-              value={`$${creditData.availableBalance.toFixed(2)}`}
+              value={`${creditData.availableBalance.toFixed(2)} SHM`}
               subtext={`${((creditData.availableBalance / creditData.creditLimit) * 100).toFixed(0)}% available`}
               iconColor="text-green-400"
             />
@@ -125,6 +178,79 @@ export default function RequestCreditPage() {
             </div>
           </motion.div>
 
+          {/* Borrow Credit Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="card p-6 bg-gradient-to-br from-purple-900/20 to-blue-900/20 border-[var(--color-accent)]/30"
+          >
+            <h3 className="text-lg font-semibold neon-text mb-4 flex items-center gap-2">
+              <DollarSign className="w-5 h-5" />
+              Borrow Credit (Receive SHM)
+            </h3>
+            <p className="text-sm text-[var(--color-text-alt)] mb-4">
+              Borrow SHM from your credit line and receive it directly to your wallet from the FlexCredit smart contract.
+            </p>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm text-[var(--color-text-alt)] mb-2">
+                  Amount (SHM)
+                  <span className="text-xs text-[var(--color-muted)] ml-2">
+                    Available: {creditData.availableBalance.toFixed(2)} SHM
+                  </span>
+                </label>
+                <input
+                  type="number"
+                  value={borrowAmount}
+                  onChange={(e) => setBorrowAmount(e.target.value)}
+                  placeholder="0.0"
+                  step="0.0001"
+                  max={creditData.availableBalance}
+                  disabled={borrowing}
+                  className="w-full px-4 py-3 bg-[var(--card)]/50 border border-[var(--color-accent)]/20 rounded-xl focus:outline-none focus:border-[var(--color-accent)] transition-colors text-[var(--color-text)]"
+                />
+              </div>
+
+              {borrowError && (
+                <div className="flex items-start gap-2 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                  <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-400">{borrowError}</p>
+                </div>
+              )}
+
+              {borrowSuccess && (
+                <div className="flex items-start gap-2 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-green-400">{borrowSuccess}</p>
+                </div>
+              )}
+
+              <button
+                onClick={handleBorrowCredit}
+                disabled={borrowing || !borrowAmount || parseFloat(borrowAmount) <= 0}
+                className="w-full py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 neon-glow"
+              >
+                {borrowing ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Processing Transaction...
+                  </>
+                ) : (
+                  <>
+                    <Zap className="w-5 h-5" />
+                    Borrow {borrowAmount || '0'} SHM
+                  </>
+                )}
+              </button>
+
+              <p className="text-xs text-[var(--color-muted)] text-center">
+                Transaction will be executed on Shardeum Testnet. SHM will be sent to your wallet.
+              </p>
+            </div>
+          </motion.div>
+
           {/* How to Increase Credit */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -142,7 +268,7 @@ export default function RequestCreditPage() {
               </div>
               <div className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] mt-2 flex-shrink-0" />
-                <p>Increase your onchain income activity on Sepolia testnet</p>
+                <p>Increase your onchain income activity on Shardeum testnet</p>
               </div>
               <div className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] mt-2 flex-shrink-0" />
