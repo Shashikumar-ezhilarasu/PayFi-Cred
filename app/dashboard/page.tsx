@@ -65,7 +65,7 @@ export default function DashboardPage() {
             <Zap className="w-20 h-20 mx-auto mb-6 text-[var(--color-accent)]" />
             <h2 className="text-4xl font-bold mb-4 neon-text">Welcome to Pay-Fi</h2>
             <p className="text-lg text-[var(--color-text-alt)] mb-2">
-              Get income-backed credit based on your Sepolia transaction history
+              Get income-backed credit based on your Shardeum transaction history
             </p>
             <p className="text-sm text-[var(--color-muted)]">
               No credit check • Instant approval • AI-powered auto-payments
@@ -151,7 +151,7 @@ export default function DashboardPage() {
               </div>
               <ArrowRight className="text-cyan-400" size={16} />
               <div className="px-3 py-2 bg-purple-500/20 rounded-lg border border-purple-500/40">
-                2️⃣ Analyze Sepolia Txs
+                2️⃣ Analyze Shardeum Txs
               </div>
               <ArrowRight className="text-cyan-400" size={16} />
               <div className="px-3 py-2 bg-green-500/20 rounded-lg border border-green-500/40">

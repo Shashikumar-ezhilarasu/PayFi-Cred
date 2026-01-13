@@ -338,10 +338,10 @@ export default function PaymentRequestsPage() {
                 
                 {/* Custom Amount Input */}
                 <div className="mb-6">
-                  <label className="block text-sm font-semibold mb-2">Custom Amount (ETH)</label>
+                  <label className="block text-sm font-semibold mb-2">Custom Amount (SHM)</label>
                   <input
                     type="number"
-                    step="0.00001"
+                    step="0.0001"
                     value={customAmount}
                     onChange={(e) => setCustomAmount(e.target.value)}
                     placeholder="Leave empty for default amount"
@@ -360,7 +360,7 @@ export default function PaymentRequestsPage() {
                       <p className="font-semibold text-sm mb-1">{merchant.name}</p>
                       <p className="text-xs text-[var(--color-text-dim)] mb-2">{merchant.description}</p>
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-purple-400">{merchant.typicalAmount} ETH</span>
+                        <span className="text-purple-400">{merchant.typicalAmount} SHM</span>
                         {merchant.wallet && (
                           <Wallet className="w-3 h-3 text-green-400" />
                         )}
@@ -472,7 +472,7 @@ function PaymentRequestCard({ request, processing, onDecide }: PaymentRequestCar
         {/* Right Side - Amount and Action */}
         <div className="text-right">
           <div className="text-2xl font-bold text-purple-400 mb-2">
-            {request.amount.toFixed(6)} ETH
+            {request.amount.toFixed(2)} SHM
           </div>
 
           {request.status === 'pending' && (
@@ -520,13 +520,13 @@ function PaymentRequestCard({ request, processing, onDecide }: PaymentRequestCar
               {/* If transaction hash exists, show blockchain link */}
               {(request as any).txHash && (
                 <a
-                  href={`https://sepolia.etherscan.io/tx/${(request as any).txHash}`}
+                  href={`https://explorer-mezame.shardeum.org/transaction/${(request as any).txHash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/50 rounded-lg text-sm text-blue-400 transition-all ml-2"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  View on Etherscan
+                  View on Shardeum Explorer
                 </a>
               )}
             </div>

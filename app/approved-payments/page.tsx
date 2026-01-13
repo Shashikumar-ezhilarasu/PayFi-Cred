@@ -293,7 +293,7 @@ export default function ApprovedPaymentsPage() {
                         </div>
                         {payment.txHash && (
                           <a
-                            href={`https://sepolia.etherscan.io/tx/${payment.txHash}`}
+                            href={`https://explorer-mezame.shardeum.org/transaction/${payment.txHash}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-1 text-[var(--color-accent)] hover:underline"
@@ -311,7 +311,7 @@ export default function ApprovedPaymentsPage() {
                       {payment.walletAddress && (
                         <div className="flex gap-2">
                           <a
-                            href={`https://sepolia.etherscan.io/address/${payment.walletAddress}`}
+                            href={`https://explorer-mezame.shardeum.org/account/${payment.walletAddress}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 px-4 py-2 bg-[var(--color-accent)]/20 hover:bg-[var(--color-accent)]/30 text-[var(--color-accent)] rounded-lg transition-colors text-sm"

@@ -54,55 +54,20 @@ export default function ProfilePage() {
         const network = await browserProvider.getNetwork();
         
         setNetworkInfo({
-          name: network.name === 'sepolia' ? 'Sepolia Testnet' : network.name,
+          name: network.name === 'unknown' && Number(network.chainId) === 8119 ? 'Shardeum Testnet' : network.name,
           chainId: Number(network.chainId),
         });
 
-        // Fetch balance using Etherscan API (more reliable)
-        const balanceResponse = await fetch(
-          `https://api-sepolia.etherscan.io/api?module=account&action=balance&address=${wallet.address}&tag=latest`
-        );
-        const balanceData = await balanceResponse.json();
-        
-        if (balanceData.status === '1' && balanceData.result) {
-          const balanceEth = ethers.formatEther(balanceData.result);
-          setBalance(parseFloat(balanceEth).toFixed(6));
-        }
+        // Fetch balance from blockchain directly
+        const balance = await browserProvider.getBalance(wallet.address);
+        const balanceShm = ethers.formatEther(balance);
+        setBalance(parseFloat(balanceShm).toFixed(6));
 
-        // Fetch recent transactions using Etherscan API (Sepolia)
-        // Using public API endpoint (no key required for basic queries)
-        console.log('Fetching transactions for address:', wallet.address);
-        
-        const txUrl = `https://api-sepolia.etherscan.io/api?module=account&action=txlist&address=${wallet.address}&startblock=0&endblock=99999999&page=1&offset=50&sort=desc`;
-        console.log('API URL:', txUrl);
-        
-        const response = await fetch(txUrl);
-        const data = await response.json();
-        
-        console.log('Etherscan API response:', data);
-
-        if (data.status === '1' && Array.isArray(data.result) && data.result.length > 0) {
-          const formattedTxs: Transaction[] = data.result.map((tx: any) => ({
-            hash: tx.hash,
-            from: tx.from,
-            to: tx.to,
-            value: ethers.formatEther(tx.value),
-            timestamp: parseInt(tx.timeStamp) * 1000,
-            blockNumber: parseInt(tx.blockNumber),
-            gasUsed: tx.gasUsed,
-            status: parseInt(tx.isError) === 0 ? 1 : 0,
-          }));
-          setTransactions(formattedTxs);
-          setError('');
-          console.log(`Loaded ${formattedTxs.length} transactions`);
-        } else if (data.status === '0' && data.message === 'No transactions found') {
-          setTransactions([]);
-          setError('');
-          console.log('No transactions found for this address');
-        } else {
-          console.warn('Unexpected API response:', data);
-          setError(data.message || 'Failed to fetch transactions');
-        }
+        // Placeholder for Shardeum transaction history
+        // Will be implemented when Shardeum block explorer API is available
+        console.log('Shardeum transactions to be implemented');
+        setTransactions([]);
+        setError('');
       } catch (error) {
         console.error('Error fetching profile data:', error);
         setError(error instanceof Error ? error.message : 'Failed to load transactions');
@@ -122,39 +87,15 @@ export default function ProfilePage() {
     try {
       if (!wallet.connected || !wallet.address) return;
 
-      // Fetch balance
-      const balanceResponse = await fetch(
-        `https://api-sepolia.etherscan.io/api?module=account&action=balance&address=${wallet.address}&tag=latest`
-      );
-      const balanceData = await balanceResponse.json();
-      
-      if (balanceData.status === '1' && balanceData.result) {
-        const balanceEth = ethers.formatEther(balanceData.result);
-        setBalance(parseFloat(balanceEth).toFixed(6));
-      }
+      // Fetch balance directly from blockchain
+      const browserProvider = new ethers.BrowserProvider(window.ethereum as any);
+      const balance = await browserProvider.getBalance(wallet.address);
+      const balanceShm = ethers.formatEther(balance);
+      setBalance(parseFloat(balanceShm).toFixed(2));
 
-      // Fetch transactions
-      const txUrl = `https://api-sepolia.etherscan.io/api?module=account&action=txlist&address=${wallet.address}&startblock=0&endblock=99999999&page=1&offset=50&sort=desc`;
-      const response = await fetch(txUrl);
-      const data = await response.json();
-
-      if (data.status === '1' && Array.isArray(data.result) && data.result.length > 0) {
-        const formattedTxs: Transaction[] = data.result.map((tx: any) => ({
-          hash: tx.hash,
-          from: tx.from,
-          to: tx.to,
-          value: ethers.formatEther(tx.value),
-          timestamp: parseInt(tx.timeStamp) * 1000,
-          blockNumber: parseInt(tx.blockNumber),
-          gasUsed: tx.gasUsed,
-          status: parseInt(tx.isError) === 0 ? 1 : 0,
-        }));
-        setTransactions(formattedTxs);
-        setError('');
-      } else if (data.status === '0') {
-        setTransactions([]);
-        setError('');
-      }
+      // Transactions will be available when Shardeum API is integrated
+      setTransactions([]);
+      setError('');
     } catch (error) {
       console.error('Error refreshing:', error);
       setError('Failed to refresh data');
@@ -243,11 +184,12 @@ export default function ProfilePage() {
             {/* Wallet Info */}
             <div className="flex-1 space-y-4">
               <div className="space-y-4">
-                <div>
-                  <label className="text-sm text-[var(--color-muted)] mb-1 block">
-                    Wallet Address
-                  </label>
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1">
+                    <label className="text-sm text-[var(--color-muted)] mb-1 block">
+                      Wallet Address
+                    </label>
+                    <div className="flex items-center gap-2 flex-wrap">
                     <code className="text-lg text-[var(--color-text)] font-mono">
                       {wallet.address}
                     </code>
@@ -263,18 +205,30 @@ export default function ProfilePage() {
                       )}
                     </button>
                     <a
-                      href={`https://sepolia.etherscan.io/address/${wallet.address}`}
+                      href={`https://explorer-mezame.shardeum.org/address/${wallet.address}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2 hover:bg-[var(--elev)] rounded-lg transition-colors"
-                      title="View on Etherscan"
+                      title="View on Shardeum Explorer"
                     >
                       <ExternalLink className="w-5 h-5 text-[var(--color-muted)]" />
                     </a>
+                    {wallet.isVerified && (
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500/20 border border-green-500/50 rounded-lg">
+                        <CheckCircle className="w-4 h-4 text-green-400" />
+                        <span className="text-sm text-green-400 font-semibold">Verified</span>
+                        {wallet.verificationDate && (
+                          <span className="text-xs text-green-400/70 ml-1">
+                            {new Date(wallet.verificationDate).toLocaleDateString()}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
+              </div>
 
-                {networkInfo && (
+              {networkInfo && (
                   <div>
                     <label className="text-sm text-[var(--color-muted)] mb-1 block">
                       Connected Network
@@ -302,7 +256,7 @@ export default function ProfilePage() {
                     <span className="text-sm text-[var(--color-muted)]">Balance</span>
                   </div>
                   <p className="text-2xl font-bold text-[var(--color-text)]">
-                    {balance} <span className="text-sm text-[var(--color-muted)]">ETH</span>
+                    {balance} <span className="text-sm text-[var(--color-muted)]">SHM</span>
                   </p>
                 </div>
 
@@ -345,7 +299,7 @@ export default function ProfilePage() {
             <div className="flex items-center gap-3">
               <Activity className="w-6 h-6 text-[var(--color-accent)]" />
               <h2 className="text-2xl font-bold neon-text">
-                Recent Transactions (Sepolia Testnet)
+                Recent Transactions (Shardeum Testnet)
               </h2>
             </div>
             <button
@@ -373,7 +327,7 @@ export default function ProfilePage() {
               <Activity className="w-16 h-16 text-[var(--color-muted)] mx-auto mb-4" />
               <p className="text-[var(--color-text-alt)] mb-2">No transactions found</p>
               <p className="text-sm text-[var(--color-muted)]">
-                Make some transactions on Sepolia testnet to see them here
+                Make some transactions on Shardeum testnet to see them here
               </p>
             </div>
           ) : (
@@ -392,7 +346,7 @@ export default function ProfilePage() {
                     className="flex items-center gap-2 text-[var(--color-accent2)] hover:underline"
                   >
                     <ExternalLink className="w-4 h-4" />
-                    View on Sepolia Explorer
+                    View on Shardeum Explorer
                   </a>
                 </div>
               </div>
@@ -465,12 +419,12 @@ export default function ProfilePage() {
                     <div className="text-right">
                       <div className="flex items-center gap-2 justify-end mb-1">
                         <span className="text-lg font-bold text-[var(--color-accent2)]">
-                          {parseFloat(tx.value).toFixed(6)}
+                          {parseFloat(tx.value).toFixed(4)}
                         </span>
-                        <span className="text-sm text-[var(--color-text-dim)]">ETH</span>
+                        <span className="text-sm text-[var(--color-text-dim)]">SHM</span>
                       </div>
                       <a
-                        href={`https://sepolia.etherscan.io/block/${tx.blockNumber}`}
+                        href={`https://explorer-mezame.shardeum.org/block/${tx.blockNumber}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-xs text-[var(--color-text-dim)] hover:text-[var(--color-accent)] transition-colors"
