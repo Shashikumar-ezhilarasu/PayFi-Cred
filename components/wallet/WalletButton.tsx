@@ -7,6 +7,7 @@ import { connectWallet, isMetaMaskInstalled, onAccountsChanged, onChainChanged, 
 import { Wallet, LogOut, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { NoiseBackground } from '@/components/ui/noise-background';
+import { ethers } from 'ethers';
 
 export function WalletButton() {
   const router = useRouter();
@@ -55,39 +56,78 @@ export function WalletButton() {
         return;
       }
 
-      // Step 2: Request signature to verify ownership
-      const message = `Welcome to PayForMe!\n\nSign this message to create your credit account.\n\nWallet: ${result.address}\nTimestamp: ${new Date().toISOString()}\n\nThis request will not trigger a blockchain transaction or cost any gas fees.`;
-      
-      try {
-        const signature = await window.ethereum.request({
-          method: 'personal_sign',
-          params: [message, result.address],
-        });
+      // Step 2: Check if we're on the correct network (Shardeum)
+      const provider = new ethers.BrowserProvider(window.ethereum as any);
+      const network = await provider.getNetwork();
 
-        // Step 3: Connection and signature successful
-        setWallet({
-          address: result.address,
-          connected: true,
-          network: result.network,
-        });
-
-        console.log('Account created with signature:', signature);
-
-        // Navigate to connect page for onboarding
-        router.push('/connect');
-      } catch (signError: any) {
-        console.error('Signature rejected:', signError);
-        if (signError.code === 4001) {
-          alert('You must sign the message to create your PayForMe account.');
-        } else {
-          alert('Failed to sign message. Please try again.');
+      if (network.chainId !== BigInt(8119)) {
+        // Try to switch to Shardeum network
+        if (window.ethereum) {
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x1f91' }], // 8119 in hex
+            });
+          } catch (switchError: any) {
+            // If network not added, add it
+            if (switchError.code === 4902) {
+              try {
+                await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [{
+                    chainId: '0x1f91',
+                    chainName: 'Shardeum EVM Testnet',
+                    rpcUrls: ['https://api-mezame.shardeum.org'],
+                    blockExplorerUrls: ['https://explorer-mezame.shardeum.org'],
+                    nativeCurrency: {
+                      name: 'SHM',
+                      symbol: 'SHM',
+                      decimals: 18,
+                    },
+                  }],
+                });
+              } catch (addError) {
+                console.warn('Failed to add Shardeum network:', addError);
+                // Continue anyway - user can switch manually later
+              }
+            }
+          }
         }
-        setIsConnecting(false);
-        return;
       }
-    } catch (error) {
+
+      // Step 3: Request signature to verify ownership
+      const message = `Welcome to PayFi-Cred!\n\nSign this message to create your credit account.\n\nWallet: ${result.address}\nTimestamp: ${new Date().toISOString()}\n\nThis request will not trigger a blockchain transaction or cost any gas fees.`;
+
+      if (!window.ethereum) {
+        throw new Error('MetaMask not available');
+      }
+
+      const signature = await window.ethereum.request({
+        method: 'personal_sign',
+        params: [message, result.address],
+      });
+
+      // Step 4: Connection and signature successful
+      setWallet({
+        address: result.address,
+        connected: true,
+        network: result.network,
+      });
+
+      console.log('Account created with signature:', signature);
+
+      // Navigate to connect page for onboarding
+      router.push('/connect');
+    } catch (error: any) {
       console.error('Connection error:', error);
-      alert('An error occurred while connecting. Please try again.');
+      
+      // Handle specific error types
+      if (error.code === 4001) {
+        alert('You must sign the message to create your PayFi-Cred account.');
+      } else {
+        alert('An error occurred while connecting. Please try again.');
+      }
+      
       setIsConnecting(false);
     } finally {
       setIsConnecting(false);
@@ -156,6 +196,15 @@ export function WalletButton() {
                 Network: {wallet.network}
               </p>
             )}
+            <a
+              href="https://explorer-mezame.shardeum.org/txs"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center space-x-1 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mt-2 transition-colors"
+            >
+              <span>View Your Wallet on Shardeum Explorer</span>
+              <span className="text-xs">↗</span>
+            </a>
           </div>
 
           <button

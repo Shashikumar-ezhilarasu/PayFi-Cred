@@ -3,41 +3,55 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, RefreshCw, CheckCircle, X } from 'lucide-react';
-import { 
-  getCurrentNetwork, 
-  switchNetwork, 
+import { useAppStore } from '@/store/useAppStore';
+import {
+  getCurrentNetwork,
+  switchNetwork,
   NETWORKS,
   isSupportedNetwork,
-  getNetworkName 
+  getNetworkName
 } from '@/lib/networks';
 
 export default function NetworkChecker() {
+  const { wallet } = useAppStore();
   const [currentChainId, setCurrentChainId] = useState<number | null>(null);
   const [isSupported, setIsSupported] = useState(true);
   const [switching, setSwitching] = useState(false);
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    checkNetwork();
+    // Only check network if wallet is connected
+    if (wallet.connected && typeof window !== 'undefined' && window.ethereum) {
+      checkNetwork();
 
-    // Listen for network changes
-    if (typeof window !== 'undefined' && window.ethereum) {
-      window.ethereum.on('chainChanged', (chainId: string) => {
-        const chainIdNumber = parseInt(chainId, 16);
-        setCurrentChainId(chainIdNumber);
-        setIsSupported(isSupportedNetwork(chainIdNumber));
-        setShowBanner(!isSupportedNetwork(chainIdNumber));
-      });
+      // Listen for network changes
+      const ethereum = window.ethereum;
+      if (ethereum) {
+        ethereum.on?.('chainChanged', (...args: unknown[]) => {
+          const chainId = args[0] as string;
+          const chainIdNumber = parseInt(chainId, 16);
+          setCurrentChainId(chainIdNumber);
+          setIsSupported(isSupportedNetwork(chainIdNumber));
+          setShowBanner(!isSupportedNetwork(chainIdNumber));
+        });
+      }
+    } else {
+      // Hide banner if wallet is not connected
+      setShowBanner(false);
     }
 
     return () => {
-      if (typeof window !== 'undefined' && window.ethereum) {
-        window.ethereum.removeAllListeners('chainChanged');
-      }
+      // Cleanup will happen automatically on page reload (MetaMask behavior)
     };
-  }, []);
+  }, [wallet.connected]);
 
   const checkNetwork = async () => {
+    // Only check if wallet is connected
+    if (!wallet.connected) {
+      setShowBanner(false);
+      return;
+    }
+
     try {
       const network = await getCurrentNetwork();
       if (network) {
@@ -46,13 +60,22 @@ export default function NetworkChecker() {
         setShowBanner(false);
       }
     } catch (error) {
-      // Network not supported
+      // Network not supported or MetaMask not connected
       if (typeof window !== 'undefined' && window.ethereum) {
-        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-        const chainIdNumber = parseInt(chainId, 16);
-        setCurrentChainId(chainIdNumber);
-        setIsSupported(false);
-        setShowBanner(true);
+        try {
+          const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+          const chainIdNumber = parseInt(chainId as string, 16);
+          setCurrentChainId(chainIdNumber);
+          setIsSupported(isSupportedNetwork(chainIdNumber));
+          setShowBanner(!isSupportedNetwork(chainIdNumber));
+        } catch (chainError) {
+          // MetaMask not connected or not available
+          console.log('MetaMask not connected, skipping network check');
+          setShowBanner(false);
+        }
+      } else {
+        // No MetaMask installed
+        setShowBanner(false);
       }
     }
   };
@@ -62,8 +85,9 @@ export default function NetworkChecker() {
       setSwitching(true);
       await switchNetwork(chainId);
       setShowBanner(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error switching network:', error);
+      alert(`Failed to switch network: ${error.message || 'Unknown error'}`);
     } finally {
       setSwitching(false);
     }

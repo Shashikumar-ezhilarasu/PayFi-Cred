@@ -83,36 +83,42 @@ export const CONTRACT_ADDRESSES = {
 // Get current network
 export const getCurrentNetwork = async () => {
   if (typeof window === 'undefined' || !window.ethereum) {
-    throw new Error('Ethereum provider not found');
+    return null; // Return null instead of throwing error
   }
 
-  const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-  const chainIdNumber = parseInt(chainId, 16);
-  
-  return Object.values(NETWORKS).find(network => network.chainId === chainIdNumber);
+  try {
+    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+    const chainIdNumber = parseInt(chainId as string, 16);
+
+    return Object.values(NETWORKS).find(network => network.chainId === chainIdNumber);
+  } catch (error) {
+    // MetaMask not connected or request failed
+    return null;
+  }
 };
 
 // Get contract address for current network
 export const getContractAddress = async (contractName: keyof typeof CONTRACT_ADDRESSES) => {
   const network = await getCurrentNetwork();
-  
+
   if (!network) {
-    throw new Error('Unsupported network. Please switch to a supported network.');
+    // Return default Shardeum address if network check fails
+    return CONTRACT_ADDRESSES[contractName][8119] || CONTRACT_ADDRESSES[contractName][Object.keys(CONTRACT_ADDRESSES[contractName])[0] as any];
   }
-  
+
   const address = CONTRACT_ADDRESSES[contractName][network.chainId];
-  
+
   if (!address) {
     throw new Error(`Contract ${contractName} not deployed on ${network.name}`);
   }
-  
+
   return address;
 };
 
 // Switch to a specific network
 export const switchNetwork = async (chainId: number) => {
   if (typeof window === 'undefined' || !window.ethereum) {
-    throw new Error('Ethereum provider not found');
+    throw new Error('MetaMask is not connected. Please connect your wallet first.');
   }
 
   try {
@@ -128,7 +134,7 @@ export const switchNetwork = async (chainId: number) => {
       if (!network) {
         throw new Error('Network not found');
       }
-      
+
       try {
         await window.ethereum.request({
           method: 'wallet_addEthereumChain',
@@ -148,7 +154,7 @@ export const switchNetwork = async (chainId: number) => {
     }
     throw error;
   }
-};
+};;
 
 // Check if contract exists at address
 export const checkContractExists = async (address: string) => {
