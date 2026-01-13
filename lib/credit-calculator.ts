@@ -69,7 +69,7 @@ function generateMockSepoliaTransactions(address: string): SepoliaTransaction[] 
       hash: `0x${Math.random().toString(16).substring(2, 66)}`,
       from: `0x${Math.random().toString(16).substring(2, 42)}`,
       to: address,
-      value: (Math.random() * 0.5 + 0.1).toFixed(18), // 0.1 to 0.6 ETH
+      value: (Math.random() * 0.5 + 0.1).toFixed(18), // 0.1 to 0.6 SHM
       timeStamp: (now - daysAgo * dayInSeconds).toString(),
       isError: '0',
       blockNumber: (18000000 + i * 1000).toString(),
@@ -83,7 +83,7 @@ function generateMockSepoliaTransactions(address: string): SepoliaTransaction[] 
       hash: `0x${Math.random().toString(16).substring(2, 66)}`,
       from: address,
       to: `0x${Math.random().toString(16).substring(2, 42)}`,
-      value: (Math.random() * 0.3 + 0.02).toFixed(18), // 0.02 to 0.32 ETH
+      value: (Math.random() * 0.3 + 0.02).toFixed(18), // 0.02 to 0.32 SHM
       timeStamp: (now - daysAgo * dayInSeconds).toString(),
       isError: '0',
       blockNumber: (18000000 + i * 800).toString(),
@@ -188,8 +188,8 @@ export function calculateCreditLimit(metrics: CashflowMetrics): number {
   const stabilityFactor = Math.max(0.5, 1 - volatilityPenalty * 0.3);
   baseLimit *= stabilityFactor;
   
-  // Ensure minimum viable credit (0.001 ETH) and cap at reasonable max
-  const finalLimit = Math.max(0.001, Math.min(baseLimit, 10));
+  // Ensure minimum Bronze tier credit (500 SHM) and cap at Platinum max (5000 SHM)
+  const finalLimit = Math.max(500, Math.min(baseLimit, 5000));
   
   return finalLimit;
 }
@@ -203,9 +203,9 @@ export async function assessCreditLimit(
   const transactions = await fetchSepoliaTransactions(address);
   
   if (transactions.length === 0) {
-    // New user with no history - give minimum credit
+    // New user with no history - give initial Bronze tier credit (500 SHM)
     return {
-      creditLimit: 0.01,
+      creditLimit: 500,
       metrics: {
         avgMonthlyInflow: 0,
         repaymentScore: 0,
@@ -216,9 +216,10 @@ export async function assessCreditLimit(
       transactionCount: 0,
       analysisTimestamp: new Date().toISOString(),
       reasoning: [
-        'No transaction history found',
-        'Assigned minimum starter credit of 0.01 ETH',
-        'Build history to increase limit',
+        'New user - No transaction history found',
+        'Assigned initial Bronze tier credit of 500 SHM',
+        'Make on-time repayments to increase to 1000 SHM (Silver)',
+        'Build consistent repayment history to unlock higher tiers',
       ],
     };
   }
@@ -226,15 +227,19 @@ export async function assessCreditLimit(
   const metrics = analyzeCashflow(transactions, address);
   const creditLimit = calculateCreditLimit(metrics);
   
+  // Determine tier based on credit limit
+  const tier = creditLimit >= 5000 ? 'Platinum' : creditLimit >= 2000 ? 'Gold' : creditLimit >= 1000 ? 'Silver' : 'Bronze';
+  
   // Generate human-readable reasoning
   const reasoning: string[] = [
-    `Analyzed ${transactions.length} Sepolia transactions`,
-    `Average monthly inflow: ${metrics.avgMonthlyInflow.toFixed(6)} ETH`,
+    `Analyzed ${transactions.length} Shardeum transactions`,
+    `Average monthly inflow: ${metrics.avgMonthlyInflow.toFixed(2)} SHM`,
     `Repayment behavior score: ${(metrics.repaymentScore * 100).toFixed(1)}%`,
     `Transaction consistency: ${(metrics.consistencyScore * 100).toFixed(1)}%`,
     `Volatility adjustment: ${(metrics.volatilityPenalty * 100).toFixed(1)}%`,
-    `Calculated credit limit: ${creditLimit.toFixed(6)} ETH`,
-  ];
+    `Calculated credit limit: ${creditLimit.toFixed(2)} SHM (${tier} tier)`,
+    creditLimit === 500 ? 'Make on-time repayments to increase to 1000 SHM' : '',
+  ].filter(line => line !== '');
   
   return {
     creditLimit,

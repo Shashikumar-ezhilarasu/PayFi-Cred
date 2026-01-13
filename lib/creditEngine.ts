@@ -3,11 +3,11 @@
 
 import type { CreditData, Transaction, RiskLevel, CreditTier } from '@/types';
 
-// Initial credit state for new users (Sepolia testnet values)
+// Initial credit state for new users (Shardeum testnet values)
 export const INITIAL_CREDIT_STATE: CreditData = {
-  creditScore: 300,
-  creditLimit: 0.001, // Start with 0.001 USDC
-  availableBalance: 0.001,
+  creditScore: 500, // Start at 500 (Bronze tier: 300-579)
+  creditLimit: 500, // Start with 500 SHM
+  availableBalance: 500,
   usedCredit: 0,
   repaymentRate: 100,
   riskLevel: 'LOW',
@@ -112,20 +112,20 @@ export function determineCreditTier(score: number): CreditTier {
 }
 
 /**
- * Calculate maximum allowed credit limits by tier (Sepolia testnet values)
- * These are small amounts suitable for testnet transactions
+ * Calculate maximum allowed credit limits by tier (Shardeum testnet values)
+ * New accounts start at 500 SHM, grow to 1000 SHM after first repayment
  */
 export function getMaxCreditLimitForTier(tier: CreditTier): number {
   switch (tier) {
     case 'Platinum':
-      return 1.0; // 1 USDC
+      return 5000; // 5000 SHM
     case 'Gold':
-      return 0.5; // 0.5 USDC
+      return 2000; // 2000 SHM
     case 'Silver':
-      return 0.1; // 0.1 USDC
+      return 1000; // 1000 SHM
     case 'Bronze':
     default:
-      return 0.01; // 0.01 USDC
+      return 500; // 500 SHM
   }
 }
 
