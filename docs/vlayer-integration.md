@@ -17,6 +17,7 @@ IncomeProofVerifier Contract (On-chain)
         ↓
 FlexCreditCore (Credit Limit Assignment)
 ```
+<img width="920" height="622" alt="image" src="https://github.com/user-attachments/assets/d6c29aab-03df-438f-8f67-f576a6076c78" />
 
 ## Smart Contract Components
 
