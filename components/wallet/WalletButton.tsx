@@ -6,6 +6,7 @@ import { useAppStore } from '@/store/useAppStore';
 import { connectWallet, isMetaMaskInstalled, onAccountsChanged, onChainChanged, removeWalletListeners } from '@/lib/wallet';
 import { Wallet, LogOut, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { NoiseBackground } from '@/components/ui/noise-background';
 
 export function WalletButton() {
   const router = useRouter();
@@ -105,25 +106,28 @@ export function WalletButton() {
 
   if (!wallet.connected) {
     return (
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={handleConnect}
-        disabled={isConnecting}
-        className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+      <NoiseBackground
+        containerClassName="rounded-lg"
+        gradientColors={["rgb(79, 70, 229)", "rgb(168, 85, 247)"]}
       >
-        {isConnecting ? (
-          <>
-            <Loader2 className="w-4 h-4 animate-spin" />
-            <span>Connecting...</span>
-          </>
-        ) : (
-          <>
-            <Wallet className="w-4 h-4" />
-            <span>Connect Wallet</span>
-          </>
-        )}
-      </motion.button>
+        <button
+          onClick={handleConnect}
+          disabled={isConnecting}
+          className="flex items-center space-x-2 px-4 py-2 text-white font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isConnecting ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Connecting...</span>
+            </>
+          ) : (
+            <>
+              <Wallet className="w-4 h-4" />
+              <span>Connect Wallet</span>
+            </>
+          )}
+        </button>
+      </NoiseBackground>
     );
   }
 
