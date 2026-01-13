@@ -12,6 +12,9 @@ import {
   CheckCircle,
   Sparkles
 } from 'lucide-react';
+import { NoiseBackground } from '@/components/ui/noise-background';
+import { WobbleCard } from '@/components/ui/wobble-card';
+import { WavyBackground } from '@/components/ui/wavy-background';
 
 export default function Home() {
   const router = useRouter();
@@ -28,82 +31,32 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 pt-32 pb-20">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center max-w-4xl mx-auto"
-        >
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center space-x-2 bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/30 px-4 py-2 rounded-full mb-6"
+      <WavyBackground className="max-w-4xl mx-auto pb-40">
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white text-center">
+          Income-Backed Credit for Onchain Workers
+        </h1>
+        <p className="text-xl md:text-2xl text-white/80 mb-8 max-w-2xl mx-auto text-center">
+          Under-collateralized credit based on your cashflow. Smart accounts ready for humans and AI agents.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+          <NoiseBackground
+            containerClassName="w-fit p-2 rounded-full mx-auto"
+            gradientColors={[
+              "rgb(255, 100, 150)",
+              "rgb(100, 150, 255)",
+              "rgb(255, 200, 100)",
+            ]}
           >
-            <Sparkles className="w-4 h-4 text-[var(--color-accent)]" />
-            <span className="text-sm font-semibold text-[var(--color-accent)]">
-              Powered by Web3 & AI
-            </span>
-          </motion.div>
-
-          {/* Heading */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-[var(--color-accent)] via-[var(--color-accent2)] to-[var(--color-accent)] bg-clip-text text-transparent">
-            Income-Backed Credit for Onchain Workers
-          </h1>
-
-          <p className="text-xl md:text-2xl text-[var(--color-text-dim)] mb-8 max-w-2xl mx-auto">
-            Under-collateralized credit based on your cashflow. Smart accounts ready for humans and AI agents.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <button 
               onClick={handleGetStarted}
-              className="px-8 py-4 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent2)] text-black rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all flex items-center space-x-2"
+              className="h-full w-full cursor-pointer rounded-full bg-linear-to-r from-neutral-100 via-neutral-100 to-white px-8 py-4 text-black shadow-[0px_2px_0px_0px_var(--color-neutral-50)_inset,0px_0.5px_1px_0px_var(--color-neutral-400)] transition-all duration-100 active:scale-98 dark:from-black dark:via-black dark:to-neutral-900 dark:text-white dark:shadow-[0px_1px_0px_0px_var(--color-neutral-950)_inset,0px_1px_0px_0px_var(--color-neutral-800)] font-semibold text-lg flex items-center space-x-2"
             >
               <span>Get Started</span>
               <ArrowRight className="w-5 h-5" />
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-[var(--card)] border-2 border-[var(--color-accent)]/30 rounded-xl font-semibold text-lg hover:border-[var(--color-accent)] transition-all"
-            >
-              Learn More
-            </motion.button>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
-            {[
-              { label: 'Credit Limit', value: 'Up to $50K' },
-              { label: 'Interest Rate', value: '0%' },
-              { label: 'Approval Time', value: '< 3 sec' },
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + index * 0.1 }}
-                className="text-center"
-              >
-                <p className="text-3xl font-bold text-[var(--color-accent)]">
-                  {stat.value}
-                </p>
-                <p className="text-sm text-[var(--color-text-dim)] mt-1">
-                  {stat.label}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      </section>
+            </button>
+          </NoiseBackground>
+        </div>
+      </WavyBackground>
 
       {/* How It Works */}
       <section className="container mx-auto px-4 py-20">
@@ -173,69 +126,55 @@ export default function Home() {
 
       {/* Features */}
       <section className="container mx-auto px-4 py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl font-bold mb-4">Why Choose PayForMe?</h2>
-          <p className="text-xl text-gray-600 dark:text-[var(--color-text-dim)]">
-            The future of decentralized finance
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {[
-            {
-              icon: Lock,
-              title: 'Trustless & Transparent',
-              description: 'All credit decisions recorded on-chain with verifiable proof',
-            },
-            {
-              icon: Zap,
-              title: 'Instant Decisions',
-              description: 'AI-powered MCP agent evaluates and approves in under 3 seconds',
-            },
-            {
-              icon: Shield,
-              title: 'Secure by Design',
-              description: 'Your credit identity is a non-transferable NFT you control',
-            },
-            {
-              icon: TrendingUp,
-              title: 'Build Credit Score',
-              description: 'Every successful repayment increases your on-chain credit',
-            },
-            {
-              icon: CheckCircle,
-              title: '0% Interest',
-              description: 'Pay nothing extra when you repay within 30 days',
-            },
-            {
-              icon: Sparkles,
-              title: 'Web3 Native',
-              description: 'Works across partner apps with one credit identity',
-            },
-          ].map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                className="bg-[var(--card)] rounded-xl p-6 shadow-lg border border-[var(--color-accent)]/20"
-              >
-                <Icon className="w-10 h-10 text-[var(--color-accent)] mb-4" />
-                <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
-                <p className="text-[var(--color-text-dim)] text-sm">
-                  {feature.description}
-                </p>
-              </motion.div>
-            );
-          })}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 max-w-7xl mx-auto w-full">
+          <WobbleCard
+            containerClassName="col-span-1 lg:col-span-2 h-full bg-pink-800 min-h-[500px] lg:min-h-[300px]"
+            className=""
+          >
+            <div className="max-w-xs">
+              <h2 className="text-left text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
+                Gippity AI powers the entire universe
+              </h2>
+              <p className="mt-4 text-left  text-base/6 text-neutral-200">
+                With over 100,000 mothly active bot users, Gippity AI is the most
+                popular AI platform for developers.
+              </p>
+            </div>
+            <img
+              src="/linear.webp"
+              width={500}
+              height={500}
+              alt="linear demo image"
+              className="absolute -right-4 lg:-right-[40%] grayscale filter -bottom-10 object-contain rounded-2xl"
+            />
+          </WobbleCard>
+          <WobbleCard containerClassName="col-span-1 min-h-[300px]">
+            <h2 className="max-w-80  text-left text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
+              No shirt, no shoes, no weapons.
+            </h2>
+            <p className="mt-4 max-w-[26rem] text-left  text-base/6 text-neutral-200">
+              If someone yells “stop!”, goes limp, or taps out, the fight is over.
+            </p>
+          </WobbleCard>
+          <WobbleCard containerClassName="col-span-1 lg:col-span-3 bg-blue-900 min-h-[500px] lg:min-h-[600px] xl:min-h-[300px]">
+            <div className="max-w-sm">
+              <h2 className="max-w-sm md:max-w-lg  text-left text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
+                Signup for blazing-fast cutting-edge state of the art Gippity AI
+                wrapper today!
+              </h2>
+              <p className="mt-4 max-w-[26rem] text-left  text-base/6 text-neutral-200">
+                With over 100,000 mothly active bot users, Gippity AI is the most
+                popular AI platform for developers.
+              </p>
+            </div>
+            <img
+              src="/linear.webp"
+              width={500}
+              height={500}
+              alt="linear demo image"
+              className="absolute -right-10 md:-right-[40%] lg:-right-[20%] -bottom-10 object-contain rounded-2xl"
+            />
+          </WobbleCard>
         </div>
       </section>
 
