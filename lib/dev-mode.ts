@@ -1,6 +1,7 @@
-// Development mode helpers - Use mock data when contracts aren't deployed
+// Development mode helpers - DEPRECATED
+// Mock data is no longer used. All data comes from blockchain.
 
-export const DEV_MODE = process.env.NEXT_PUBLIC_DEV_MODE === 'true' || true; // Always true for development
+export const DEV_MODE = false; // Always use real contract data
 
 // Mock credit data
 export const MOCK_CREDIT_DATA = {
