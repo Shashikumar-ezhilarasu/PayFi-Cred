@@ -6,12 +6,12 @@ export const APP_DESCRIPTION = 'Income-backed credit and onchain account layer f
 // Network configuration
 export const SUPPORTED_NETWORKS = {
   ETHEREUM_MAINNET: 1,
-  ETHEREUM_SEPOLIA: 11155111,
+  SHARDEUM_TESTNET: 8119,
   POLYGON_MAINNET: 137,
   POLYGON_MUMBAI: 80001,
 };
 
-export const DEFAULT_NETWORK = SUPPORTED_NETWORKS.ETHEREUM_SEPOLIA;
+export const DEFAULT_NETWORK = SUPPORTED_NETWORKS.SHARDEUM_TESTNET;
 
 // Credit score ranges
 export const CREDIT_SCORE_RANGES = {

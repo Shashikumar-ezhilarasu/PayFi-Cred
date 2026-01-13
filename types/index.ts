@@ -25,6 +25,8 @@ export interface WalletState {
   connected: boolean;
   network: string | null;
   balance: string;
+  isVerified?: boolean;
+  verificationDate?: string;
 }
 
 export interface CreditIdentity {
@@ -34,6 +36,8 @@ export interface CreditIdentity {
   creditScore: number;
   ipfsMetadataUri: string;
   mintedAt: string;
+  isVerified?: boolean;
+  verificationDate?: string;
 }
 
 export interface CreditData {

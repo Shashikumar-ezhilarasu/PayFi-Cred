@@ -56,8 +56,8 @@ export const DEFAULT_AGENT_POLICY: AgentPolicy = {
   },
   autoRepay: true,
   penaltyMode: 'relaxed',
-  dailySpendLimit: 0.05, // 0.05 ETH per day
-  requireApprovalAbove: 0.02, // Transactions > 0.02 ETH need approval
+  dailySpendLimit: 0.05, // 0.05 SHM per day
+  requireApprovalAbove: 0.02, // Transactions > 0.02 SHM need approval
 };
 
 /**
@@ -132,7 +132,7 @@ export function evaluateSpendingIntent(
   if (intent.amount > policy.requireApprovalAbove) {
     return {
       approved: false,
-      reason: `Amount exceeds manual approval threshold (${policy.requireApprovalAbove} ETH)`,
+      reason: `Amount exceeds manual approval threshold (${policy.requireApprovalAbove} SHM)`,
       requiresManualApproval: true,
       categoryUsage: 0,
       dailyUsage: spendingTracker.getTodaySpending(),
@@ -143,7 +143,7 @@ export function evaluateSpendingIntent(
   if (intent.amount > availableCredit) {
     return {
       approved: false,
-      reason: `Insufficient credit (available: ${availableCredit.toFixed(6)} ETH)`,
+      reason: `Insufficient credit (available: ${availableCredit.toFixed(6)} SHM)`,
       requiresManualApproval: false,
       categoryUsage: 0,
       dailyUsage: spendingTracker.getTodaySpending(),
@@ -155,7 +155,7 @@ export function evaluateSpendingIntent(
   if (todaySpending + intent.amount > policy.dailySpendLimit) {
     return {
       approved: false,
-      reason: `Daily spend limit reached (${policy.dailySpendLimit} ETH)`,
+      reason: `Daily spend limit reached (${policy.dailySpendLimit} SHM)`,
       requiresManualApproval: true,
       categoryUsage: 0,
       dailyUsage: todaySpending,
@@ -283,7 +283,7 @@ export function checkAutoRepayment(
   return {
     shouldRepay: true,
     amount: repayAmount,
-    reason: `Auto-repaying ${repayAmount.toFixed(6)} ETH from incoming funds`,
+    reason: `Auto-repaying ${repayAmount.toFixed(6)} SHM from incoming funds`,
   };
 }
 
