@@ -1,5 +1,8 @@
 # Inco Integration: Privacy-First DeFi Implementation
 
+![WhatsApp Image 2026-01-13 at 11 30 07 AM](https://github.com/user-attachments/assets/49899748-677c-4b06-b1f4-a0fde6f7ed98)
+
+
 ## 🎯 Overview
 
 PayFi-Cred won Inco's $600 Privacy Challenge by implementing confidential DeFi operations using Inco's confidentiality layer for blockchain. This enables smart contracts to work with encrypted data on public chains, essentially providing TLS/SSL for Web3.
