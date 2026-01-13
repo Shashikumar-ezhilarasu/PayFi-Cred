@@ -18,9 +18,11 @@ type ContractABI = InterfaceAbi;
  * 5. Deploy AgentWalletFactory.sol
  * 6. Call authorizeVerifier() on FlexCreditCore to authorize the verifier contracts
  */
+
+// Smart Contract Addresses - Load from environment variables for dynamic configuration
 export const CONTRACT_ADDRESSES = {
-  FlexCreditCore: '0xF21C05d1AEE9b444C90855A9121a28bE941785B5', // Main credit management contract
-  IncomeProofVerifier: '0x9342FAFf81fC6D9baabe0a07F01B7847b5705d1E', // Income verification contract
+  FlexCreditCore: process.env.NEXT_PUBLIC_FLEX_CREDIT_CORE || '0xF21C05d1AEE9b444C90855A9121a28bE941785B5',
+  IncomeProofVerifier: process.env.NEXT_PUBLIC_INCOME_PROOF_VERIFIER || '0x9342FAFf81fC6D9baabe0a07F01B7847b5705d1E',
   AgentWallet: '', // Optional: Agent wallet contract (can deploy multiple)
   AgentWalletFactory: '0x75E893f1ab5b939c0446C3e336f7FC715a6C2AEc', // Factory for creating agent wallets
   AgentPolicy: '0xd66ED9F4Deeee15A617845d460A68EF2D85eE43E', // Agent policy management contract
