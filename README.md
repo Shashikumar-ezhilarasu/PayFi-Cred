@@ -115,11 +115,11 @@ PayFi-Cred operates on the Shardeum EVM Testnet (Chain ID: 8119) with multiple i
 
 | Contract                     | Address                                      | Purpose                                |
 | ---------------------------- | -------------------------------------------- | -------------------------------------- |
-| **FlexCreditCore**           | `0xbC3fC58882Aa2c49038f35cB7bbDe7cc118bf464` | Main credit management                 |
-| **IncomeProofVerifier**      | `0x0b82685505Ef4744Ee0744D777E9D3f9cc48714f` | Income verification via vlayer proofs  |
-| **AgentWalletFactory**       | `0x5E2182aA00F15D099b3b563c19f301B4160c30B0` | Factory for AI agent smart wallets     |
-| **AgentPolicy**              | `0x4458D6534E83C933d5C54A41434CA74362d0362E` | Agent spending policy enforcement      |
-| **AgentPerformanceVerifier** | `0x30698293F53c856530F7D847a103C31709269541` | Agent trading performance verification |
+| **FlexCreditCore**           | `0xa8D44Ef33A40a18E8bDb22279b26309a4159AE5C` | Main credit management                 |
+| **IncomeProofVerifier**      | `0x53240F03241A7bB259A60DA48c543c5679bEF0D5` | Income verification via vlayer proofs  |
+| **AgentWalletFactory**       | `0xEb0B186f24d4fd6be637701551382b9F8f7f6738` | Factory for AI agent smart wallets     |
+| **AgentPolicy**              | `0xa864A6f1A4a8320fE8ede2E4f95CAD8a0Fb623A1` | Agent spending policy enforcement      |
+| **AgentPerformanceVerifier** | `0x29B97d27393256c0b776E1403FA594dbb48E1c08` | Agent trading performance verification |
 
 ### Key Functions
 

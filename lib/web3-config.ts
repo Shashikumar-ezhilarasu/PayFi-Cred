@@ -21,12 +21,12 @@ type ContractABI = InterfaceAbi;
 
 // Smart Contract Addresses - Load from environment variables for dynamic configuration
 export const CONTRACT_ADDRESSES = {
-  FlexCreditCore: process.env.NEXT_PUBLIC_FLEX_CREDIT_CORE || '0xF21C05d1AEE9b444C90855A9121a28bE941785B5',
-  IncomeProofVerifier: process.env.NEXT_PUBLIC_INCOME_PROOF_VERIFIER || '0x9342FAFf81fC6D9baabe0a07F01B7847b5705d1E',
+  FlexCreditCore: '0xa8D44Ef33A40a18E8bDb22279b26309a4159AE5C',
+  IncomeProofVerifier: '0x53240F03241A7bB259A60DA48c543c5679bEF0D5',
   AgentWallet: '', // Optional: Agent wallet contract (can deploy multiple)
-  AgentWalletFactory: '0x75E893f1ab5b939c0446C3e336f7FC715a6C2AEc', // Factory for creating agent wallets
-  AgentPolicy: '0xd66ED9F4Deeee15A617845d460A68EF2D85eE43E', // Agent policy management contract
-  AgentPerformanceVerifier: '0xd66ED9F4Deeee15A617845d460A68EF2D85eE43E', // Agent performance verification contract
+  AgentWalletFactory: '0xEb0B186f24d4fd6be637701551382b9F8f7f6738', // Factory for creating agent wallets
+  AgentPolicy: '0xa864A6f1A4a8320fE8ede2E4f95CAD8a0Fb623A1', // Agent policy management contract
+  AgentPerformanceVerifier: '0x29B97d27393256c0b776E1403FA594dbb48E1c08', // Agent performance verification contract
 };
 
 export const CONTRACT_ABIS: Record<string, ContractABI> = {
