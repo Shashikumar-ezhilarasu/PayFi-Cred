@@ -45,11 +45,17 @@ export default function TransactionsPage() {
 
       const allEvents: BlockchainEvent[] = [];
 
+      // Get current block number to query recent history
+      const currentBlock = await provider.getBlockNumber();
+      const fromBlock = Math.max(0, currentBlock - 10000); // Query last 10000 blocks
+      
+      console.log(`📊 Querying events from block ${fromBlock} to ${currentBlock}`);
+
       // Fetch CreditUsed events (Borrow)
       console.log('📊 Fetching CreditUsed events...');
       try {
         const creditUsedFilter = flexCreditCore.filters.CreditUsed(wallet.address);
-        const creditUsedEvents = await flexCreditCore.queryFilter(creditUsedFilter);
+        const creditUsedEvents = await flexCreditCore.queryFilter(creditUsedFilter, fromBlock, currentBlock);
         
         for (const event of creditUsedEvents) {
           // Type guard for EventLog (has args)
@@ -57,7 +63,7 @@ export default function TransactionsPage() {
             const block = await event.getBlock();
             allEvents.push({
               type: 'Borrow',
-              amount: ethers.formatUnits(event.args[1], 6), // amount (USDC has 6 decimals)
+              amount: ethers.formatEther(event.args[1]), // amount (SHM has 18 decimals)
               txHash: event.transactionHash,
               blockNumber: event.blockNumber,
               timestamp: block.timestamp,
@@ -74,14 +80,14 @@ export default function TransactionsPage() {
       console.log('📊 Fetching CreditRepaid events...');
       try {
         const creditRepaidFilter = flexCreditCore.filters.CreditRepaid(wallet.address);
-        const creditRepaidEvents = await flexCreditCore.queryFilter(creditRepaidFilter);
+        const creditRepaidEvents = await flexCreditCore.queryFilter(creditRepaidFilter, fromBlock, currentBlock);
         
         for (const event of creditRepaidEvents) {
           if ('args' in event && event.args) {
             const block = await event.getBlock();
             allEvents.push({
               type: 'Repayment',
-              amount: ethers.formatUnits(event.args[1], 6), // amount
+              amount: ethers.formatEther(event.args[1]), // amount (SHM has 18 decimals)
               txHash: event.transactionHash,
               blockNumber: event.blockNumber,
               timestamp: block.timestamp,
@@ -106,14 +112,14 @@ export default function TransactionsPage() {
           );
 
           const actionExecutedFilter = agentWallet.filters.ActionExecuted();
-          const actionExecutedEvents = await agentWallet.queryFilter(actionExecutedFilter);
+          const actionExecutedEvents = await agentWallet.queryFilter(actionExecutedFilter, fromBlock, currentBlock);
           
           for (const event of actionExecutedEvents) {
             if ('args' in event && event.args) {
               const block = await event.getBlock();
               allEvents.push({
                 type: 'Agent Spend',
-                amount: ethers.formatUnits(event.args[1] || 0, 6), // value
+                amount: ethers.formatEther(event.args[1] || 0), // value (SHM has 18 decimals)
                 txHash: event.transactionHash,
                 blockNumber: event.blockNumber,
                 timestamp: block.timestamp,
@@ -254,7 +260,7 @@ export default function TransactionsPage() {
 
                 {/* Amount */}
                 <div className="font-mono text-cyan-400">
-                  ${Number(event.amount).toFixed(2)}
+                  {Number(event.amount).toFixed(2)} SHM
                 </div>
 
                 {/* Block Number */}
@@ -265,7 +271,12 @@ export default function TransactionsPage() {
                 {/* Timestamp */}
                 <div className="text-[var(--color-text-dim)]">
                   {event.timestamp 
-                    ? new Date(event.timestamp * 1000).toLocaleDateString()
+                    ? new Date(event.timestamp * 1000).toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })
                     : 'N/A'}
                 </div>
 
@@ -275,9 +286,10 @@ export default function TransactionsPage() {
                     {event.txHash.substring(0, 10)}...
                   </span>
                   <a
-                    href={`https://sepolia.etherscan.io/tx/${event.txHash}`}
+                    href={`https://explorer-mezame.shardeum.org/transaction/${event.txHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    title="View transaction on Shardeum Explorer"
                     className="text-cyan-400 hover:text-cyan-300 transition-colors"
                   >
                     <ExternalLink size={16} />
