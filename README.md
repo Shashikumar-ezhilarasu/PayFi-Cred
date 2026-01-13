@@ -16,7 +16,8 @@ PayFi-Cred is a revolutionary Web3 credit protocol that enables instant credit a
 - 🎨 **Credit NFT Ownership** - Soulbound NFT storing your complete credit history
 - 🤖 **AI Agent Wallets** - Smart wallets with spending caps and policy enforcement
 - 🔒 **Privacy-First** - vlayer zero-knowledge proofs for income verification
-- 🌐 **Multi-Chain Ready** - Currently on Shardeum, extensible to other EVM chains
+- � **Secure KYC Integration** - PAN and Aadhaar verification with MongoDB storage linked to wallet addresses
+- �🌐 **Multi-Chain Ready** - Currently on Shardeum, extensible to other EVM chains
 
 ## 🚀 Quick Start
 
@@ -153,6 +154,7 @@ Traditional credit systems expose users' complete financial profiles:
 - **Transaction history analysis** reveals spending habits and lifestyle
 - **Credit limit & risk score** indicates financial health and borrowing capacity
 - **Agent policies & category limits** show behavioral patterns and preferences
+- **Identity verification data** (PAN, Aadhaar) creates permanent identity linkages
 
 **Without privacy, this data becomes a permanent public record** that can be used for:
 
@@ -160,6 +162,19 @@ Traditional credit systems expose users' complete financial profiles:
 - Financial discrimination
 - Identity theft and fraud
 - Reputation damage
+- Government surveillance and profiling
+
+### Identity Verification Privacy
+
+PayFi-Cred implements a **hybrid privacy model** for KYC data:
+
+- **MongoDB Storage**: PAN and Aadhaar data stored in encrypted MongoDB collections
+- **Wallet Linking**: Identity data cryptographically linked to user's wallet address
+- **Zero-Knowledge Verification**: KYC compliance verified without exposing actual identity data
+- **Decentralized Access Control**: Only wallet owner can authorize identity data usage
+- **Blockchain Anchoring**: Verification proofs stored on-chain without revealing sensitive data
+
+This approach ensures regulatory compliance while maintaining user privacy and data sovereignty.
 
 ### Inco's Technology: TLS/SSL for Web3
 
@@ -259,7 +274,58 @@ POST /api/pan-verification/send-otp
 POST /api/pan-verification/verify-otp
 ```
 
-India-specific KYC verification using PAN card numbers.
+India-specific KYC verification using PAN card numbers with MongoDB storage.
+
+**Send OTP Request:**
+
+```json
+{
+  "panNumber": "ABCDE1234F",
+  "walletAddress": "0x..."
+}
+```
+
+**Send OTP Response:**
+
+```json
+{
+  "success": true,
+  "message": "OTP sent to registered mobile number",
+  "verificationId": "ver_123456"
+}
+```
+
+**Verify OTP Request:**
+
+```json
+{
+  "verificationId": "ver_123456",
+  "otp": "123456",
+  "walletAddress": "0x..."
+}
+```
+
+**Verify OTP Response:**
+
+```json
+{
+  "success": true,
+  "message": "PAN verified successfully",
+  "panData": {
+    "panNumber": "ABCDE1234F",
+    "name": "JOHN DOE",
+    "isVerified": true,
+    "verificationDate": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+**Database Integration:**
+
+- PAN data stored in MongoDB `kyc_verifications` collection
+- Cryptographically linked to user's wallet address
+- Verification status tracked for compliance
+- Zero-knowledge proofs generated for on-chain verification
 
 ### Income Verification
 
@@ -279,13 +345,162 @@ Verifies user income through various sources (bank statements, payslips, etc.).
   - `keys`: Encryption keys
   - `data`: Encrypted user information
 
+### MongoDB Database Storage
+
+- **Database**: `PayFiCredDB`
+- **Purpose**: Secure storage of KYC and identity verification data
+- **Security Model**: Data linked to wallet addresses for decentralized access control
+- **Collections**:
+  - `kyc_verifications`: PAN and Aadhaar verification records
+    - **PAN Data**: Permanent Account Number for Indian tax identification
+    - **Aadhaar Data**: Unique Identification Number for Indian citizens
+    - **Wallet Linking**: Each KYC record is cryptographically linked to user's wallet address
+    - **Encryption**: Sensitive identity data encrypted using Inco's confidential computing
+  - `user_profiles`: Extended user information and verification status
+  - `verification_logs`: Audit trail of all KYC verification attempts
+
+**Security Architecture:**
+
+- **Decentralized Access**: Only wallet address owner can access their KYC data
+- **Zero-Knowledge Verification**: KYC proofs generated without revealing actual identity data
+- **Blockchain Anchoring**: Verification hashes stored on-chain for immutability
+- **Privacy Preservation**: Identity data never exposed in plain text
+
 ### Smart Contract Storage
 
 - **Network**: Shardeum EVM Testnet
 - **Persistence**: All credit data stored on-chain
 - **Privacy**: Zero-knowledge proofs for sensitive data
 
-## 🔐 Security Features
+## �️ Database Connections
+
+### MongoDB Configuration
+
+PayFi-Cred uses MongoDB for secure storage of KYC and identity verification data.
+
+**Connection Details:**
+
+```javascript
+// MongoDB connection configuration
+const mongoConfig = {
+  uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/payficred',
+  database: 'PayFiCredDB',
+  options: {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    ssl: process.env.NODE_ENV === 'production',
+    authSource: 'admin'
+  }
+};
+```
+
+**Environment Variables:**
+
+```bash
+# MongoDB Connection
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/payficred
+MONGODB_DB=PayFiCredDB
+
+# Alternative for local development
+MONGODB_URI=mongodb://localhost:27017/payficred
+```
+
+**Collections Schema:**
+
+#### `kyc_verifications`
+
+```javascript
+{
+  _id: ObjectId,
+  walletAddress: "0x...", // Indexed field for fast lookups
+  panNumber: "ABCDE1234F", // Encrypted
+  panName: "JOHN DOE", // Encrypted
+  aadhaarNumber: "123456789012", // Encrypted
+  aadhaarName: "JOHN DOE", // Encrypted
+  verificationStatus: "verified|pending|failed",
+  verificationDate: ISODate("2024-01-15T10:30:00Z"),
+  ipfsHash: "Qm...", // IPFS hash of verification documents
+  blockchainTxHash: "0x...", // On-chain verification transaction
+  createdAt: ISODate("2024-01-15T10:25:00Z"),
+  updatedAt: ISODate("2024-01-15T10:30:00Z")
+}
+```
+
+#### `user_profiles`
+
+```javascript
+{
+  _id: ObjectId,
+  walletAddress: "0x...", // Primary key
+  email: "user@domain.com", // Optional, encrypted
+  phone: "+91XXXXXXXXXX", // Optional, encrypted
+  kycLevel: "basic|advanced|complete",
+  creditScore: 750, // Encrypted with Inco
+  riskProfile: "low|medium|high",
+  preferences: {
+    notifications: true,
+    autoRepayment: false
+  },
+  createdAt: ISODate("2024-01-15T10:00:00Z"),
+  lastLogin: ISODate("2024-01-15T10:25:00Z")
+}
+```
+
+#### `verification_logs`
+
+```javascript
+{
+  _id: ObjectId,
+  walletAddress: "0x...",
+  verificationType: "pan|aadhaar|income",
+  action: "otp_sent|otp_verified|verification_complete|verification_failed",
+  ipAddress: "192.168.1.1",
+  userAgent: "Mozilla/5.0...",
+  timestamp: ISODate("2024-01-15T10:25:00Z"),
+  metadata: {
+    panLastFour: "E1234F",
+    errorCode: null
+  }
+}
+```
+
+**Security Features:**
+
+- **Field-Level Encryption**: Sensitive data encrypted before storage
+- **Wallet-Based Access Control**: Only wallet owner can access their data
+- **Audit Logging**: All verification attempts logged for compliance
+- **IPFS Integration**: Document storage for regulatory compliance
+- **Blockchain Anchoring**: Verification proofs stored on-chain
+
+**Connection Management:**
+
+```javascript
+// Database connection with retry logic
+import { MongoClient } from 'mongodb';
+
+class DatabaseManager {
+  private client: MongoClient;
+  
+  async connect() {
+    try {
+      this.client = new MongoClient(mongoConfig.uri, mongoConfig.options);
+      await this.client.connect();
+      console.log('✅ Connected to MongoDB');
+    } catch (error) {
+      console.error('❌ MongoDB connection failed:', error);
+      // Retry logic here
+    }
+  }
+  
+  async getKYCData(walletAddress: string) {
+    const db = this.client.db(mongoConfig.database);
+    return await db.collection('kyc_verifications')
+      .findOne({ walletAddress: walletAddress.toLowerCase() });
+  }
+}
+```
+
+## �🔐 Security Features
 
 ### Zero-Knowledge Proofs
 
