@@ -1,5 +1,15 @@
 // Network configuration and helpers for Pay-fi
 
+// Get RPC URL from environment variable or use default
+const SHARDEUM_RPC_URL = process.env.NEXT_PUBLIC_RPC_URL || 'https://api-mezame.shardeum.org';
+const SHARDEUM_EXPLORER_URL = process.env.NEXT_PUBLIC_EXPLORER_URL || 'https://explorer-mezame.shardeum.org';
+const SHARDEUM_CHAIN_ID = process.env.NEXT_PUBLIC_CHAIN_ID ? parseInt(process.env.NEXT_PUBLIC_CHAIN_ID) : 8119;
+const SHARDEUM_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME || 'Shardeum EVM Testnet';
+
+// Smart Contract Addresses from environment
+const FLEX_CREDIT_CORE_ADDRESS = process.env.NEXT_PUBLIC_FLEX_CREDIT_CORE || '0xF21C05d1AEE9b444C90855A9121a28bE941785B5';
+const INCOME_PROOF_VERIFIER_ADDRESS = process.env.NEXT_PUBLIC_INCOME_PROOF_VERIFIER || '0x9342FAFf81fC6D9baabe0a07F01B7847b5705d1E';
+
 export const NETWORKS = {
   ETHEREUM_MAINNET: {
     chainId: 1,
@@ -32,10 +42,10 @@ export const NETWORKS = {
     blockExplorer: 'https://amoy.polygonscan.com'
   },
   SHARDEUM_TESTNET: {
-    chainId: 8119,
-    name: 'Shardeum EVM Testnet',
-    rpcUrl: 'https://api-mezame.shardeum.org',
-    blockExplorer: 'https://explorer-mezame.shardeum.org'
+    chainId: SHARDEUM_CHAIN_ID,
+    name: SHARDEUM_CHAIN_NAME,
+    rpcUrl: SHARDEUM_RPC_URL,
+    blockExplorer: SHARDEUM_EXPLORER_URL
   },
   LOCALHOST: {
     chainId: 31337,
@@ -54,7 +64,7 @@ export const CONTRACT_ADDRESSES = {
     [NETWORKS.POLYGON_MAINNET.chainId]: '0x21Ca49781F161CDCE7F75e801a7a42eFb2850f1b',
     [NETWORKS.POLYGON_MUMBAI.chainId]: '0x21Ca49781F161CDCE7F75e801a7a42eFb2850f1b',
     [NETWORKS.POLYGON_AMOY.chainId]: '0x21Ca49781F161CDCE7F75e801a7a42eFb2850f1b',
-    [NETWORKS.SHARDEUM_TESTNET.chainId]: '0xF21C05d1AEE9b444C90855A9121a28bE941785B5',
+    [SHARDEUM_CHAIN_ID]: FLEX_CREDIT_CORE_ADDRESS,
     [NETWORKS.LOCALHOST.chainId]: '0x21Ca49781F161CDCE7F75e801a7a42eFb2850f1b'
   },
   
@@ -65,7 +75,7 @@ export const CONTRACT_ADDRESSES = {
     [NETWORKS.POLYGON_MAINNET.chainId]: '0x0826a4A88Ce7864619610bBbAf6c781FB30257fC',
     [NETWORKS.POLYGON_MUMBAI.chainId]: '0x0826a4A88Ce7864619610bBbAf6c781FB30257fC',
     [NETWORKS.POLYGON_AMOY.chainId]: '0x0826a4A88Ce7864619610bBbAf6c781FB30257fC',
-    [NETWORKS.SHARDEUM_TESTNET.chainId]: '0x9342FAFf81fC6D9baabe0a07F01B7847b5705d1E',
+    [SHARDEUM_CHAIN_ID]: INCOME_PROOF_VERIFIER_ADDRESS,
     [NETWORKS.LOCALHOST.chainId]: '0x0826a4A88Ce7864619610bBbAf6c781FB30257fC'
   }
 } as const;
