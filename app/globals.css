@@ -213,3 +213,18 @@ textarea:focus-visible {
   color: var(--bg);
 }
 
+/* Infinite scroll animation for moving cards */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-50% - 0.5rem));
+  }
+}
+
+.animate-scroll {
+  animation: scroll var(--animation-duration, 40s) var(--animation-direction, forwards) linear infinite;
+}
+
+
