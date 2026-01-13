@@ -1,6 +1,6 @@
 /**
- * ETH Display Component with Full Precision
- * Shows complete ETH values without rounding
+ * SHM Display Component with Full Precision
+ * Shows complete SHM values without rounding
  */
 
 interface EthDisplayProps {
@@ -16,7 +16,7 @@ export function EthDisplay({
   value,
   label,
   showFiat = false,
-  fiatRate = 2500, // Default ETH price
+  fiatRate = 0.05, // Default SHM price
   size = 'md',
   className = '',
 }: EthDisplayProps) {
@@ -24,7 +24,7 @@ export function EthDisplay({
   
   // Format with full precision
   const fullPrecision = ethValue.toFixed(18).replace(/\.?0+$/, ''); // Remove trailing zeros
-  const roundedValue = ethValue.toFixed(4);
+  const roundedValue = ethValue.toFixed(2);
   const fiatValue = (ethValue * fiatRate).toFixed(2);
   
   const sizeClasses = {
@@ -45,10 +45,10 @@ export function EthDisplay({
         <span className="text-green-600 dark:text-green-400">
           {fullPrecision}
         </span>
-        <span className="text-[var(--color-text-dim)] ml-1">ETH</span>
+        <span className="text-[var(--color-text-dim)] ml-1">SHM</span>
       </div>
       <div className="text-xs text-[var(--color-text-dim)] mt-0.5">
-        ≈ {roundedValue} ETH
+        ≈ {roundedValue} SHM
         {showFiat && ` ($${fiatValue})`}
       </div>
     </div>
@@ -99,14 +99,14 @@ export function CreditRatioDisplay({
         <span className="text-blue-500">
           {limitPrecision}
         </span>
-        <span className="text-[var(--color-text-dim)] ml-1">ETH</span>
+        <span className="text-[var(--color-text-dim)] ml-1">SHM</span>
       </div>
       
       <div className="text-xs text-[var(--color-text-dim)] mt-1 space-y-0.5">
-        <div>Used: {used.toFixed(4)} ETH ({utilizationPercent.toFixed(1)}%)</div>
-        <div>Limit: {limit.toFixed(4)} ETH</div>
+        <div>Used: {used.toFixed(2)} SHM ({utilizationPercent.toFixed(1)}%)</div>
+        <div>Limit: {limit.toFixed(2)} SHM</div>
         {available !== undefined && (
-          <div className="text-green-400">Available: {available.toFixed(6)} ETH</div>
+          <div className="text-green-400">Available: {available.toFixed(2)} SHM</div>
         )}
       </div>
     </div>
@@ -114,7 +114,7 @@ export function CreditRatioDisplay({
 }
 
 /**
- * Mini ETH display for tables/lists
+ * Mini SHM display for tables/lists
  */
 interface MiniEthDisplayProps {
   value: number;
@@ -125,9 +125,9 @@ export function MiniEthDisplay({ value, className = '' }: MiniEthDisplayProps) {
   const fullPrecision = value.toFixed(18).replace(/\.?0+$/, '');
   
   return (
-    <span className={`font-mono text-sm ${className}`} title={`${fullPrecision} ETH`}>
-      <span className="text-green-500">{value.toFixed(6)}</span>
-      <span className="text-[var(--color-text-dim)] ml-1">ETH</span>
+    <span className={`font-mono text-sm ${className}`} title={`${fullPrecision} SHM`}>
+      <span className="text-green-500">{value.toFixed(2)}</span>
+      <span className="text-[var(--color-text-dim)] ml-1">SHM</span>
     </span>
   );
 }

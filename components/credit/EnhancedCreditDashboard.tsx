@@ -74,7 +74,7 @@ export default function EnhancedCreditDashboard() {
         <div className="text-center">
           <Loader2 className="w-16 h-16 mx-auto mb-4 text-[var(--color-accent)] animate-spin" />
           <h3 className="text-xl font-semibold mb-2">Analyzing Your Transaction History</h3>
-          <p className="text-[var(--color-text-dim)]">Fetching Sepolia transactions and computing credit limit...</p>
+          <p className="text-[var(--color-text-dim)]">Fetching Shardeum transactions and computing credit limit...</p>
         </div>
       </div>
     );
@@ -87,7 +87,7 @@ export default function EnhancedCreditDashboard() {
           <AlertCircle className="w-16 h-16 mx-auto mb-4 text-[var(--color-accent2)]" />
           <h3 className="text-2xl font-semibold mb-4">Apply for Pay-Fi Credit</h3>
           <p className="text-[var(--color-text-dim)] mb-6">
-            We'll analyze your Sepolia transaction history to determine your credit limit. 
+            We'll analyze your Shardeum transaction history to determine your credit limit. 
             Credit is earned based on your onchain behavior, not manually selected.
           </p>
           <button
@@ -117,13 +117,23 @@ export default function EnhancedCreditDashboard() {
           </h2>
           <p className="text-[var(--color-text-dim)] mt-1">Manage your income-backed credit line</p>
         </div>
-        <button
-          onClick={handleRefresh}
-          disabled={loading}
-          className="p-3 bg-[var(--color-accent)]/10 hover:bg-[var(--color-accent)]/20 rounded-xl transition-all duration-300 border border-[var(--color-accent)]/20"
-        >
-          <RefreshCw className={`w-5 h-5 text-[var(--color-accent)] ${loading ? 'animate-spin' : ''}`} />
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleAssessCredit}
+            disabled={assessingCredit}
+            className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 rounded-xl font-semibold transition-all duration-300 shadow-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Zap className="w-5 h-5" />
+            {assessingCredit ? 'Assessing...' : 'Get Credit'}
+          </button>
+          <button
+            onClick={handleRefresh}
+            disabled={loading}
+            className="p-3 bg-[var(--color-accent)]/10 hover:bg-[var(--color-accent)]/20 rounded-xl transition-all duration-300 border border-[var(--color-accent)]/20"
+          >
+            <RefreshCw className={`w-5 h-5 text-[var(--color-accent)] ${loading ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
       </div>
 
       {/* Credit Assessment Info */}
@@ -265,13 +275,13 @@ export default function EnhancedCreditDashboard() {
           <div>
             <p className="text-[var(--color-text-dim)] mb-1">Daily Spend Limit</p>
             <p className="text-lg font-mono font-semibold text-[var(--color-accent)]">
-              {agentPolicy.dailySpendLimit.toFixed(6)} ETH
+              {agentPolicy.dailySpendLimit.toFixed(2)} SHM
             </p>
           </div>
           <div>
             <p className="text-[var(--color-text-dim)] mb-1">Manual Approval Above</p>
             <p className="text-lg font-mono font-semibold text-[var(--color-accent2)]">
-              {agentPolicy.requireApprovalAbove.toFixed(6)} ETH
+              {agentPolicy.requireApprovalAbove.toFixed(2)} SHM
             </p>
           </div>
           <div>
@@ -327,11 +337,11 @@ function CategoryCard({ category }: CategoryCardProps) {
       <div className="space-y-2 text-sm">
         <div className="flex justify-between">
           <span className="text-[var(--color-text-dim)]">Used</span>
-          <span className="font-mono font-semibold">{category.used.toFixed(6)} ETH</span>
+          <span className="font-mono font-semibold">{category.used.toFixed(2)} SHM</span>
         </div>
         <div className="flex justify-between">
           <span className="text-[var(--color-text-dim)]">Limit</span>
-          <span className="font-mono font-semibold">{category.limit.toFixed(6)} ETH</span>
+          <span className="font-mono font-semibold">{category.limit.toFixed(2)} SHM</span>
         </div>
         <div className="w-full h-2 bg-[var(--bg)] rounded-full overflow-hidden">
           <div 
