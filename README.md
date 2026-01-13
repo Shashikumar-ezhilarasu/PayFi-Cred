@@ -11,6 +11,18 @@ PayFi-Cred is a revolutionary Web3 credit protocol that enables instant credit a
 
 **Winner of Inco's $600 Privacy Challenge** and backed by ThinkRoot Ventures' $1,200 investment, PayFi-Cred includes both web and mobile applications for comprehensive DeFi credit management.
 
+## 📚 Detailed Documentation
+
+For comprehensive technical details about each component and integration:
+
+- **[Inco Integration](docs/inco-integration.md)** - Privacy-preserving confidential computing for income verification
+- **[ThinkRoot Ventures & PSLang](docs/thinkroot-pslang-integration.md)** - Natural language programming and mobile app development
+- **[Shardeum Blockchain](docs/shardeum-integration.md)** - High-performance EVM blockchain for credit operations
+- **[vlayer Integration](docs/vlayer-integration.md)** - Zero-knowledge proofs for privacy-preserving verification
+- **[MongoDB Integration](docs/mongodb-integration.md)** - Secure KYC data management with encryption
+- **[API Endpoints](docs/api-endpoints.md)** - Complete REST API documentation for all services
+- **[Smart Contracts](docs/smart-contracts.md)** - Solidity contracts on Shardeum EVM
+
 ## 🌟 Key Features
 
 - ⚡ **Instant Credit Approvals** - AI evaluates on-chain income in under 3 seconds
