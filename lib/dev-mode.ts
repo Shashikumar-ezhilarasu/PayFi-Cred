@@ -107,7 +107,7 @@ export const shouldUseMockData = async (): Promise<boolean> => {
   try {
     // Try to get the network
     const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-    const chainIdNumber = parseInt(chainId, 16);
+    const chainIdNumber = parseInt(chainId as string, 16);
     
     // If on localhost or unknown network, use mock data
     if (chainIdNumber === 31337 || chainIdNumber === 1337) {

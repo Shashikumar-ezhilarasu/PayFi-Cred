@@ -164,7 +164,7 @@ export default function ApprovedPaymentsPage() {
             searchValue={searchTerm}
             onSearchChange={setSearchTerm}
             filterValue={filterStatus}
-            onFilterChange={setFilterStatus}
+            onFilterChange={(value) => setFilterStatus(value as 'all' | 'completed' | 'pending')}
             searchPlaceholder="Search merchants or descriptions..."
             filterOptions={[
               { value: 'all', label: 'All Status' },

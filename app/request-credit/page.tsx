@@ -127,7 +127,7 @@ export default function RequestCreditPage() {
               icon={DollarSign}
               label="Credit Limit"
               value={`${creditData.creditLimit.toFixed(2)} SHM`}
-              subtext={`Tier: ${creditData.creditTier || creditData.tier || 'Bronze'}`}
+              subtext={`Tier: ${creditData.creditTier || 'Bronze'}`}
             />
             <StatsCard
               icon={TrendingUp}

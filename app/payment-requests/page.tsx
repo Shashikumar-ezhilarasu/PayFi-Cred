@@ -9,6 +9,7 @@ import {
   generateRandomPaymentRequest,
   getCategoryEmoji,
   type PaymentRequest,
+  type PaymentRequestStatus,
   type Merchant 
 } from '@/lib/payment-requests';
 import { evaluateSpendingIntent, recordSpending } from '@/lib/agent-policy';
@@ -77,7 +78,7 @@ export default function PaymentRequestsPage() {
         if (req.id === request.id) {
           const updatedRequest = {
             ...req,
-            status: decision.approved ? 'approved' : 'rejected',
+            status: (decision.approved ? 'approved' : 'rejected') as PaymentRequestStatus,
             agentDecision: {
               approved: decision.approved,
               reason: decision.reason,

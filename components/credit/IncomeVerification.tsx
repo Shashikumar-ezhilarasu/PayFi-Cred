@@ -64,7 +64,7 @@ export default function IncomeVerification() {
       const incomeScore = Number(data.income);
       
       setMonthlyIncome(incomeScore.toString());
-      setCreditLimit(limitUSDC.toFixed(2));
+      setCreditLimit(limitSHM.toFixed(2));
       setLastVerified(new Date().toLocaleDateString());
       
       // Note: Income sources are not stored on-chain in current implementation
