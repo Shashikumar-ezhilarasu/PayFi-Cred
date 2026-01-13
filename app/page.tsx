@@ -15,6 +15,41 @@ import {
 import { NoiseBackground } from '@/components/ui/noise-background';
 import { WobbleCard } from '@/components/ui/wobble-card';
 import { WavyBackground } from '@/components/ui/wavy-background';
+import { InfiniteMovingCards } from '@/components/ui/infinite-moving-cards';
+import AppleCardsCarouselDemo from '@/components/apple-cards-carousel-demo';
+
+const testimonials = [
+  {
+    quote:
+      "PayFi-Cred revolutionized how I access credit. As a freelance developer, traditional banks never understood my income streams. Now I get instant credit based on my actual on-chain earnings.",
+    name: "Alex Chen",
+    title: "Web3 Developer",
+  },
+  {
+    quote:
+      "The AI agent feature is incredible. It manages my spending caps and automatically handles repayments. I've never missed a payment since I started using PayFi-Cred.",
+    name: "Sarah Mitchell",
+    title: "DAO Contributor",
+  },
+  {
+    quote:
+      "Zero interest for 30 days is a game-changer. I can bridge cash flow gaps without worrying about accumulating debt. This is what DeFi should be.",
+    name: "Marcus Johnson",
+    title: "NFT Artist",
+  },
+  {
+    quote:
+      "My Credit NFT is my most valuable asset. It carries my entire credit history on-chain, and I can use it across multiple Shardeum apps. True financial portability.",
+    name: "Elena Rodriguez",
+    title: "DeFi Researcher",
+  },
+  {
+    quote:
+      "The income verification through vlayer proofs gave me a $25K credit line in under 3 seconds. No paperwork, no waiting, no traditional credit checks. The future is here.",
+    name: "David Kim",
+    title: "Smart Contract Auditor",
+  },
+];
 
 export default function Home() {
   const router = useRouter();
@@ -59,12 +94,12 @@ export default function Home() {
       </WavyBackground>
 
       {/* How It Works */}
-      <section className="container mx-auto px-4 py-20">
+      <section className="container px-4 py-20 ml-4 md:ml-12 lg:ml-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-left mb-16"
         >
           <h2 className="text-4xl font-bold mb-4">How On-Chain Credit Works</h2>
           <p className="text-xl text-gray-600 dark:text-[var(--color-text-dim)]">
@@ -72,7 +107,7 @@ export default function Home() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-4 gap-8 max-w-6xl">
           {[
             {
               icon: Shield,
@@ -125,80 +160,82 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 max-w-7xl mx-auto w-full">
+      <section className="container px-4 py-20 ml-4 md:ml-12 lg:ml-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-left mb-16"
+        >
+          <h2 className="text-4xl font-bold mb-4">Why Choose PayFi-Cred?</h2>
+          <p className="text-xl text-gray-600 dark:text-[var(--color-text-dim)]">
+            The future of decentralized credit on Shardeum
+          </p>
+        </motion.div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 max-w-7xl w-full">
           <WobbleCard
-            containerClassName="col-span-1 lg:col-span-2 h-full bg-pink-800 min-h-[500px] lg:min-h-[300px]"
+            containerClassName="col-span-1 lg:col-span-2 h-full bg-gradient-to-br from-indigo-900 to-purple-900 min-h-[500px] lg:min-h-[300px] flex items-center justify-center"
             className=""
           >
-            <div className="max-w-xs">
-              <h2 className="text-left text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
-                Gippity AI powers the entire universe
+            <div className="max-w-lg mx-auto text-center">
+              <h2 className="text-center text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
+                AI-Powered Credit Decisions in Seconds
               </h2>
-              <p className="mt-4 text-left  text-base/6 text-neutral-200">
-                With over 100,000 mothly active bot users, Gippity AI is the most
-                popular AI platform for developers.
+              <p className="mt-4 text-center text-base/6 text-neutral-200">
+                Our MCP AI Agent evaluates your on-chain income and approves credit requests in under 3 seconds. No lengthy applications, no credit bureaus—just transparent, trustless lending.
               </p>
             </div>
-            <img
-              src="/linear.webp"
-              width={500}
-              height={500}
-              alt="linear demo image"
-              className="absolute -right-4 lg:-right-[40%] grayscale filter -bottom-10 object-contain rounded-2xl"
-            />
+            <div className="absolute left-1/2 -translate-x-1/2 -bottom-10 w-64 h-64 bg-gradient-to-br from-cyan-400/20 to-purple-400/20 rounded-full blur-3xl" />
           </WobbleCard>
-          <WobbleCard containerClassName="col-span-1 min-h-[300px]">
-            <h2 className="max-w-80  text-left text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
-              No shirt, no shoes, no weapons.
-            </h2>
-            <p className="mt-4 max-w-[26rem] text-left  text-base/6 text-neutral-200">
-              If someone yells “stop!”, goes limp, or taps out, the fight is over.
-            </p>
-          </WobbleCard>
-          <WobbleCard containerClassName="col-span-1 lg:col-span-3 bg-blue-900 min-h-[500px] lg:min-h-[600px] xl:min-h-[300px]">
-            <div className="max-w-sm">
-              <h2 className="max-w-sm md:max-w-lg  text-left text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
-                Signup for blazing-fast cutting-edge state of the art Gippity AI
-                wrapper today!
+          <WobbleCard containerClassName="col-span-1 min-h-[300px] bg-gradient-to-br from-emerald-900 to-teal-900 flex items-center justify-center">
+            <div className="text-center mx-auto">
+              <h2 className="max-w-80 mx-auto text-center text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
+                0% Interest on Repayments
               </h2>
-              <p className="mt-4 max-w-[26rem] text-left  text-base/6 text-neutral-200">
-                With over 100,000 mothly active bot users, Gippity AI is the most
-                popular AI platform for developers.
+              <p className="mt-4 max-w-[26rem] mx-auto text-center text-base/6 text-neutral-200">
+                Pay back within 30 days and owe nothing extra. Build your on-chain credit score with every successful repayment.
               </p>
             </div>
-            <img
-              src="/linear.webp"
-              width={500}
-              height={500}
-              alt="linear demo image"
-              className="absolute -right-10 md:-right-[40%] lg:-right-[20%] -bottom-10 object-contain rounded-2xl"
-            />
+          </WobbleCard>
+          <WobbleCard containerClassName="col-span-1 lg:col-span-3 bg-gradient-to-br from-blue-900 to-cyan-900 min-h-[500px] lg:min-h-[600px] xl:min-h-[300px] flex items-center justify-center">
+            <div className="max-w-2xl mx-auto text-center">
+              <h2 className="max-w-lg mx-auto text-center text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
+                Credit NFT: Your Portable On-Chain Identity
+              </h2>
+              <p className="mt-4 max-w-[36rem] mx-auto text-center text-base/6 text-neutral-200">
+                Mint a soulbound Credit NFT that stores your credit history, score, and limits. Use it across partner apps in the Shardeum ecosystem. Your credit identity, owned by you, secured by the blockchain.
+              </p>
+            </div>
+            <div className="absolute left-1/2 -translate-x-1/2 -bottom-10 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl" />
           </WobbleCard>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="container mx-auto px-4 py-20">
+      {/* Testimonials */}
+      <section className="container px-4 py-20 ml-4 md:ml-12 lg:ml-20">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent2)] rounded-3xl p-12 text-center text-black max-w-4xl mx-auto shadow-2xl"
+          className="text-left mb-16"
         >
-          <h2 className="text-4xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Join the future of decentralized credit today
+          <h2 className="text-4xl font-bold mb-4">Trusted by Web3 Builders</h2>
+          <p className="text-xl text-gray-600 dark:text-[var(--color-text-dim)]">
+            See what our users are saying about PayFi-Cred
           </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleGetStarted}
-            className="px-8 py-4 bg-[var(--bg)] text-[var(--color-accent)] border-2 border-[var(--color-accent)] rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all"
-          >
-            Connect Wallet & Start
-          </motion.button>
         </motion.div>
+        <div className="rounded-md flex flex-col antialiased items-center justify-center relative overflow-hidden">
+          <InfiniteMovingCards
+            items={testimonials}
+            direction="right"
+            speed="slow"
+          />
+        </div>
+      </section>
+
+      {/* Features Carousel */}
+      <section className="py-10 ml-4 md:ml-12 lg:ml-20">
+        <AppleCardsCarouselDemo />
       </section>
     </div>
   );
