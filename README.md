@@ -24,8 +24,6 @@ PayFi-Cred operates on the Shardeum EVM Testnet (Chain ID: 8119) with multiple i
 
 PayFi-Cred is a revolutionary Web3 credit protocol that enables instant credit approvals based on on-chain income verification. Built on Shardeum's EVM-compatible blockchain, it features AI-powered credit scoring, soulbound Credit NFTs, and zero-interest repayments within 30 days.
 
-**Winner of Inco's $600 Privacy Challenge** and backed by ThinkRoot Ventures' $1,200 investment, PayFi-Cred includes both web and mobile applications for comprehensive DeFi credit management.
-
 ## 📚 Detailed Documentation
 
 For comprehensive technical details about each component and integration:
@@ -222,7 +220,7 @@ Inco provides **confidential smart contracts** that can:
 - ✅ **Generate zero-knowledge proofs** of correct execution
 - ✅ **Work on any EVM-compatible chain** (including Shardeum)
 
-**Challenge Context**: Build next-gen, privacy-first dApps where sensitive data stays private while being processed on-chain. $600 USD prize for innovative confidential DeFi applications.
+**Challenge Context**: Build next-gen, privacy-first dApps where sensitive data stays private while being processed on-chain.
 
 ### Inco Integration in PayFi-Cred
 
@@ -685,62 +683,6 @@ npm run test:e2e
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🏆 Sponsors & Partners
-
-### Inco - $600 Prize Winner
-
-**"Privacy is the next frontier of Web3, and Inco is bringing it on-chain."**
-
-Inco is a confidentiality layer for blockchain, enabling smart contracts to work with encrypted data on public chains - basically TLS/SSL for Web3. PayFi-Cred was built using Inco's latest SDK and smart contract libraries to create confidential dApps where sensitive financial data stays private while still being processed on-chain.
-
-**How we used Inco:**
-
-- **Confidential Credit Scoring**: Encrypted credit scores processed on-chain without revealing actual values
-- **Private Income Verification**: Income data verified using zero-knowledge proofs
-- **Secure Agent Policies**: Spending limits enforced privately on Shardeum blockchain
-- **Encrypted Transaction Analysis**: Financial behavior analyzed without exposing personal data
-
-**Challenge**: Build next-gen, privacy-first decentralized applications and push the limits of Web3. $600 USD prize awarded for innovative confidential DeFi applications.
-
-### ThinkRoot Ventures - $1,200 Investment
-
-**"Crafting the Extraordinary - At the intersection of artificial intelligence and human experience"**
-
-ThinkRoot Ventures provided strategic investment and technical guidance for PayFi-Cred's development.
-
-**PSLang Platform Integration:**
-PayFi-Cred leverages ThinkRoot's revolutionary PSLang platform that breaks language barriers in technology:
-
-- **Natural Language Coding**: Write code in native languages (English, Hindi, etc.)
-- **Cross-Language Collaboration**: Team members can code in their preferred language
-- **AI-Powered Translation**: Ideas converted to flawless code automatically
-- **Inclusive Development**: Enables global collaboration regardless of technical background
-
-**Mobile App Development:**
-Built a companion mobile app using PSLang for enhanced user experience:
-
-- **Real-time Credit Monitoring**: Live credit score and limit tracking
-- **Agent Performance Dashboard**: Mobile-optimized agent analytics
-- **Secure Transaction Signing**: Mobile wallet integration with biometric authentication
-- **Push Notifications**: Instant alerts for credit approvals and payment reminders
-
-## 🙏 Acknowledgments
-
-- **Shardeum**: For providing the high-performance EVM-compatible blockchain infrastructure
-- **vlayer**: For zero-knowledge proof infrastructure enabling private income verification
-- **Inco**: For privacy-preserving encryption technology ($600 prize winner)
-- **ThinkRoot Ventures**: For strategic investment and PSLang platform integration ($1,200 investment)
-- **OpenZeppelin**: For secure smart contract patterns and best practices
-
-## 📞 Support
-
-- **Documentation**: [docs.payfi-cred.com](https://docs.payfi-cred.com)
-- **Discord**: [Join our community](https://discord.gg/payfi-cred)
-- **GitHub Issues**: [Report bugs](https://github.com/Shashikumar-ezhilarasu/PayFi-Cred/issues)
-
----
-
-**Built with ❤️ for the decentralized future**
 
 [![Deployed on Shardeum](https://img.shields.io/badge/Deployed%20on-Shardeum-orange)](https://shardeum.org/)
 [![Made with Next.js](https://img.shields.io/badge/Made%20with-Next.js-black)](https://nextjs.org/)
