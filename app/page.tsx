@@ -67,7 +67,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[var(--bg)] overflow-x-hidden max-w-4xl ml-0 flex flex-col items-start justify-start">
       <WavyBackground className="max-w-4xl pb-40">
-        <div className="max-w-4xl w-full">
+        <div className="max-w-4xl w-full flex flex-col items-center text-center">
           <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white text-center">
             Income-Backed Credit for Onchain Workers
           </h1>
@@ -96,7 +96,7 @@ export default function Home() {
       </WavyBackground>
 
       {/* How It Works */}
-      <section className="container px-4 py-20 w-full max-w-4xl">
+      <section className="container px-4 py-20 w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -162,7 +162,7 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="container px-4 py-20 w-full max-w-4xl">
+      <section className="container px-4 py-20 w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -214,7 +214,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="container px-4 py-20 w-full max-w-4xl">
+      <section className="container px-4 py-20 w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -236,7 +236,7 @@ export default function Home() {
       </section>
 
       {/* Features Carousel */}
-      <section className="py-10 w-full max-w-4xl">
+      <section className="py-10 w-full">
         <AppleCardsCarouselDemo />
       </section>
     </div>
