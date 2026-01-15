@@ -57,12 +57,12 @@ export function PrivateIncomeVerification({
   };
 
   return (
-    <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-4">Private Income Verification</h2>
+    <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col items-center justify-center max-w-md mx-auto overflow-x-hidden">
+      <h2 className="text-2xl font-bold mb-4 text-center">Private Income Verification</h2>
       
-      <div className="space-y-4">
+      <div className="space-y-4 w-full">
         {/* Income Input */}
-        <div>
+        <div className="w-full">
           <label className="block text-sm font-medium mb-2">
             Annual Income (will be encrypted)
           </label>
@@ -75,6 +75,7 @@ export function PrivateIncomeVerification({
             className="w-full px-4 py-2 border rounded-lg"
             disabled={!!encryptedHandle}
             placeholder="75000"
+            style={{ textAlign: 'center' }}
           />
           <p className="text-xs text-gray-500 mt-1">
             Minimum required: {formatCurrency(minimumIncome)}
@@ -86,14 +87,15 @@ export function PrivateIncomeVerification({
           onClick={handleEncrypt}
           disabled={isEncrypting || !!encryptedHandle}
           className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          style={{ display: 'block', margin: '0 auto' }}
         >
           {isEncrypting ? 'Encrypting...' : encryptedHandle ? 'Encrypted ✓' : 'Encrypt Income'}
         </button>
 
         {/* Encrypted Handle Display */}
         {encryptedHandle && (
-          <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded">
-            <p className="text-xs font-mono break-all">
+          <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded w-full">
+            <p className="text-xs font-mono break-all text-center">
               <strong>Encrypted Handle:</strong> {encryptedHandle}
             </p>
           </div>
@@ -105,6 +107,7 @@ export function PrivateIncomeVerification({
             onClick={handleVerify}
             disabled={isComputing}
             className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+            style={{ display: 'block', margin: '0 auto' }}
           >
             {isComputing ? 'Verifying...' : `Verify Income (≥ ${formatCurrency(minimumIncome)})`}
           </button>
@@ -113,7 +116,7 @@ export function PrivateIncomeVerification({
         {/* Result Display */}
         {isEligible !== null && (
           <div
-            className={`p-4 rounded-lg ${
+            className={`p-4 rounded-lg text-center ${
               isEligible
                 ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100'
                 : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-100'
@@ -132,7 +135,7 @@ export function PrivateIncomeVerification({
 
         {/* Errors */}
         {(encryptError || computeError) && (
-          <div className="p-4 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-100 rounded">
+          <div className="p-4 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-100 rounded text-center">
             <p className="font-semibold">Error:</p>
             <p className="text-sm">{encryptError?.message || computeError?.message}</p>
           </div>
@@ -146,6 +149,7 @@ export function PrivateIncomeVerification({
               setIsEligible(null);
             }}
             className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+            style={{ display: 'block', margin: '0 auto' }}
           >
             Reset
           </button>
@@ -153,7 +157,7 @@ export function PrivateIncomeVerification({
       </div>
 
       {/* Info Box */}
-      <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+      <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
         <p className="text-sm text-blue-800 dark:text-blue-200">
           <strong>How it works:</strong> Your income is encrypted on the client side, 
           then confidentially compared against the minimum requirement off-chain. 

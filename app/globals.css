@@ -1,4 +1,6 @@
-@import "tailwindcss";
+body {
+  overflow-x: hidden !important;
+}@import "tailwindcss";
 
 @layer base {
   :root {

@@ -65,36 +65,38 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg)]">
-      <WavyBackground className="max-w-4xl mx-auto pb-40">
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white text-center">
-          Income-Backed Credit for Onchain Workers
-        </h1>
-        <p className="text-xl md:text-2xl text-white/80 mb-8 max-w-2xl mx-auto text-center">
-          Under-collateralized credit based on your cashflow. Smart accounts ready for humans and AI agents.
-        </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-          <NoiseBackground
-            containerClassName="w-fit p-2 rounded-full mx-auto"
-            gradientColors={[
-              "rgb(255, 100, 150)",
-              "rgb(100, 150, 255)",
-              "rgb(255, 200, 100)",
-            ]}
-          >
-            <button 
-              onClick={handleGetStarted}
-              className="h-full w-full cursor-pointer rounded-full bg-linear-to-r from-neutral-100 via-neutral-100 to-white px-8 py-4 text-black shadow-[0px_2px_0px_0px_var(--color-neutral-50)_inset,0px_0.5px_1px_0px_var(--color-neutral-400)] transition-all duration-100 active:scale-98 dark:from-black dark:via-black dark:to-neutral-900 dark:text-white dark:shadow-[0px_1px_0px_0px_var(--color-neutral-950)_inset,0px_1px_0px_0px_var(--color-neutral-800)] font-semibold text-lg flex items-center space-x-2"
+    <div className="min-h-screen bg-[var(--bg)] overflow-x-hidden max-w-4xl ml-0 flex flex-col items-start justify-start">
+      <WavyBackground className="max-w-4xl pb-40">
+        <div className="max-w-4xl w-full">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-white text-center">
+            Income-Backed Credit for Onchain Workers
+          </h1>
+          <p className="text-xl md:text-2xl text-white/80 mb-8 max-w-2xl mx-auto text-center">
+            Under-collateralized credit based on your cashflow. Smart accounts ready for humans and AI agents.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+            <NoiseBackground
+              containerClassName="w-fit p-2 rounded-full mx-auto"
+              gradientColors={[
+                "rgb(255, 100, 150)",
+                "rgb(100, 150, 255)",
+                "rgb(255, 200, 100)",
+              ]}
             >
-              <span>Get Started</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          </NoiseBackground>
+              <button 
+                onClick={handleGetStarted}
+                className="h-full w-full cursor-pointer rounded-full bg-linear-to-r from-neutral-100 via-neutral-100 to-white px-8 py-4 text-black shadow-[0px_2px_0px_0px_var(--color-neutral-50)_inset,0px_0.5px_1px_0px_var(--color-neutral-400)] transition-all duration-100 active:scale-98 dark:from-black dark:via-black dark:to-neutral-900 dark:text-white dark:shadow-[0px_1px_0px_0px_var(--color-neutral-950)_inset,0px_1px_0px_0px_var(--color-neutral-800)] font-semibold text-lg flex items-center space-x-2"
+              >
+                <span>Get Started</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </NoiseBackground>
+          </div>
         </div>
       </WavyBackground>
 
       {/* How It Works */}
-      <section className="container px-4 py-20 ml-4 md:ml-12 lg:ml-20">
+      <section className="container px-4 py-20 w-full max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -160,7 +162,7 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="container px-4 py-20 ml-4 md:ml-12 lg:ml-20">
+      <section className="container px-4 py-20 w-full max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -212,7 +214,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="container px-4 py-20 ml-4 md:ml-12 lg:ml-20">
+      <section className="container px-4 py-20 w-full max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -234,7 +236,7 @@ export default function Home() {
       </section>
 
       {/* Features Carousel */}
-      <section className="py-10 ml-4 md:ml-12 lg:ml-20">
+      <section className="py-10 w-full max-w-4xl">
         <AppleCardsCarouselDemo />
       </section>
     </div>
